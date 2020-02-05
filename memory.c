@@ -9,72 +9,39 @@
 //    return (sz + sizeof(word_t) - 1) & ~(sizeof(word_t) - 1);
 //}
 
-//ctrl_t *init_control() {
-//    static ctrl_t control = {0};
-//    static ptr_t alloc;
-//    static ptr_t free;
-//
-//    control.alloc = &alloc;
-//    control.free = &free;
-//    return &control;
-//}
-
 void *request_block() {
     void *heap = sbrk(0);
     if (brk(heap + (PAGE_SZ)) == -1)
         return NULL;
-    return heap + (PAGE_SZ);
+    return heap;
 }
 
 ctrl_t *arena_control() {
     static ctrl_t control = {0};
-    void *heap = NULL;
+    ptr_t *heap = NULL;
 
-    if (control.alloc && control.free)
+//    if (control.alloc && control.free) {
+//        dbg("GIVE ARENA");
+//        return &control;
+//    }
+    if (control.free) {
+        dbg("GIVE ARENA");
         return &control;
-    write(1, "Init Arena\n", 11);
-    for (uint8_t i = 1; i <= 10; ++i) {
+    }
+    for (uint8_t i = 1; i <= MALLOC_INIT_SZ; ++i) {
         heap = request_block();
+        heap->size = PAGE_SZ - sizeof(ptr_t);
+        heap->user_ptr = heap + sizeof(ptr_t);
+        heap->free = true;
+        printf("%p, %p\n", heap, heap->user_ptr);
+        printf("%hhX, %hhX\n", (unsigned char)heap, (unsigned char)heap->user_ptr);
         dbg("<== [ Init Arena Control Loop ] ==>");
         if (!add_in_list(&control.free, heap))
             return NULL;
-        if (!add_in_list(&control.alloc, heap))
-            return NULL;
     }
-    dbg("<== [ Init Arena Control Loop  {{ END }}] ==>");
-//    heap = sbrk(0);
-//        if (brk(heap + (PAGE_SZ)) == -1)
-//            return NULL;
     dbg("<== [ Init Arena Control {{ END }}] ==>");
     return &control;
 }
-//bool add_in_list(ptr_t **p_list, void *p_ptr) {
-//    ptr_t *list = *p_list;
-//    uintptr_t *ptr = p_ptr;
-//
-//    for (list = )
-//    return true;
-//}
-//
-//ctrl_t *arena_control() {
-//    static ctrl_t control = {0};
-//    void *heap = NULL;
-//
-//    if (control.alloc && control.free)
-//        return &control;
-//    write(1, "Init Arena\n", 11);
-//    for (uint8_t i = 1; i <= 10; ++i) {
-//        heap = request_block();
-////        if (!add_in_list(&control.free, heap))
-////            return NULL;
-//        write(1, "YO\n", 3);
-//    }
-////    heap = sbrk(0);
-////        if (brk(heap + (PAGE_SZ)) == -1)
-////            return NULL;
-//    write(1, "END: Init Arena\n", 16);
-//    return &control;
-//}
 
 ptr_t **get_arena_alloc() {
     return &arena_control()->alloc;
@@ -84,52 +51,60 @@ ptr_t **get_arena_free() {
     return &arena_control()->free;
 }
 
-bool insert_into(ptr_t *new_ptr, size_t size) {
-    ptr_t **head = get_arena_alloc();
-    ptr_t *tmp = NULL;
-
-//    if (!*head) {
-//        write(1, "first\n", 6);
-//        *head = new_ptr;
-//        (*head)->next = new_ptr;
-//        (*head)->prev = new_ptr;
-//        return true;
-//    }
-    dbg("==[ INSERT INTO ] ==");
-//    tmp = (*head)->prev;
-//    write(1, tmp ? "OUI\n" : "NON\n", 4);
-//    write(1, new_ptr ? "OUI\n" : "NON\n", 4);
-//    (*head)->prev = new_ptr;
-//    tmp->next = new_ptr;
-//    write(1, "Insert\n", 7);
-//    (*head)->prev = new_ptr;
-//    (*head)->size = size;
-//    write(1, "Insert\n", 7);
-    return true;
-}
-
-
-
-//ptr_t *get_arena_alloc(bool give) {
-//    static ptr_t control = {0};
-//
-//    if (give)
-//        return &control;
-//    control = *ptr;
-//    return &control;
-//}
-//
-//void hello(void) {
-//    printf("Hello, World!\n");
-//}
-
 int main() {
-    malloc((1));
-    ptr_t **test = get_arena_free();
+    ptr_t **head_free = get_arena_free();
+    ptr_t *tmp = NULL;
+    char *lol[10];
 
-    for (ptr_t *tmp = *test; tmp && tmp->next != *test; tmp = tmp->next)
-        dbg("FINAL FREE LIST");
+//    my_malloc((1));
 
+//    dbg("FINAL FREE LIST");
+//    for (tmp = *head_free; tmp && tmp->next != *head_free; tmp = tmp->next)
+//        printf("%p\n", tmp);
+//    if (tmp && tmp != *head_free)
+//        printf("%p\n", tmp);
+//    printf("HEAD ?: %p\n", tmp->next);
+
+//    lol[0] = (*head_free)->user_ptr;
+//    for (u_int64_t i = 0; i < 6000; ++i){
+//        lol[0][i] = 'a';
+//    }
+//    lol[0][6000] = '\n';
+//    write(1, lol[0], 6001);
+
+    uint64_t index = 0;
+    for (tmp = *head_free; tmp && tmp->next != *head_free; tmp = tmp->next) {
+        lol[index] = tmp->user_ptr;
+        for (u_int64_t i = 0; i < 6000; ++i)
+            lol[index][i] = 'a';
+        lol[index][6000] = '\n';
+        write(1, lol[index], 6001);
+        ++index;
+    }
+    if (tmp && tmp != *head_free) {
+        lol[index] = tmp->user_ptr;
+        for (u_int64_t i = 0; i < 6000; ++i)
+            lol[index][i] = 'a';
+        lol[index][6000] = '\n';
+        write(1, lol[index], 6001);
+    }
+
+    char *test = my_malloc(6000);
+    for (u_int64_t i = 0; i < 6000; ++i)
+        test[i] = 'g';
+    test[6000] = '\n';
+    write(1, test, 6001);
+
+
+
+//
+//    for (tmp = *head_free; tmp && tmp->next != *head_free; tmp = tmp->next)
+//        dbg("FINAL FREE LIST");
+//    if (tmp && tmp != *head_free)
+//        dbg("FINAL FREE LIST");
+    ptr_t **free_end = get_arena_free();
+    char *str = (*free_end)->user_ptr;
+    write(1, str, 6001);
     return 0;
 }
 
