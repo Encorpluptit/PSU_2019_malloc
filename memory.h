@@ -76,7 +76,7 @@ typedef struct block_s {
 } block_t;
 
 #define ELEM_PTR(x) offsetof(ptr_t, x)
-#define MALLOC_INIT_SZ 1000
+#define MALLOC_INIT_SZ 10
 #define PAGE_SZ (getpagesize() * 2)
 #define METADATA_H_SZ sizeof(metadata_t)
 #define BLOCK_H_SZ sizeof(block_t)
