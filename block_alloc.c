@@ -20,7 +20,7 @@ static block_t *init_block(block_t *ptr, size_t sz, block_t *prev, block_t *next
             .metadata = BLOCK_OFFSET(ptr)};
     (*ptr->metadata) = (metadata_t) {
             .sz = sz - BLOCK_H_SZ - METADATA_H_SZ,
-            .next = NULL, .prev = NULL,
+            .next = NULL, .free = true,
             .user_ptr = METADATA_OFFSET(BLOCK_OFFSET(ptr))};
     if (next)
         next->prev = ptr;

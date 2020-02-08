@@ -61,9 +61,10 @@ enum {
 //typedef struct metadata_s metadata_t;
 typedef struct metadata_s {
     struct metadata_s *next;
-    struct metadata_s *prev;
+//    struct metadata_s *prev;
     size_t sz;
     void *user_ptr;
+    bool free;
 } metadata_t;
 
 typedef struct block_s {
@@ -74,7 +75,7 @@ typedef struct block_s {
 } block_t;
 
 #define ELEM_PTR(x) offsetof(ptr_t, x)
-#define MALLOC_INIT_SZ 1
+#define MALLOC_INIT_SZ 2
 #define PAGE_SZ (getpagesize() * 2)
 #define METADATA_H_SZ sizeof(metadata_t)
 #define BLOCK_H_SZ sizeof(block_t)
@@ -94,15 +95,26 @@ size_t align(size_t sz);
 // arena_control.c
 block_t *arena_control();
 
+
+
+// blo_alloc.c
 bool add_in_block_list(block_t **list, block_t *ptr, size_t sz);
 
 void *request_block(size_t sz);
 
-bool insert_into(metadata_t *new_ptr, size_t size);
+
+
+// block_control.c
+//bool split_block(metadata_t **p_block);
+bool split_block(metadata_t **p_block, size_t offset);
+
+
+
+bool insert_into(metadata_t *new_ptr, size_t sz);
 
 bool add_in_list(metadata_t **p_list, void *p_ptr);
 
-void *my_malloc(size_t size);
+void *my_malloc(size_t sz);
 
 //bool add_in_block_list(block_t *list, block_t *ptr, size_t sz);
 //
