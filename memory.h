@@ -58,27 +58,28 @@ enum {
 #define dbg_endf(x, ...)
 #endif /* _DEBUG_ */
 
-//typedef struct metadata_s metadata_t;
+//typedef struct metadata_s mdata_t;
 typedef struct metadata_s {
     struct metadata_s *next;
-//    struct metadata_s *prev;
-    size_t size;
+    struct metadata_s *prev;
+    size_t sz;
     void *user_ptr;
 //    bool free;
 //    void *data;
 //    char data[1];
-} metadata_t;
+} mdata_t;
 
 typedef struct block_s {
-    size_t sz;
+    struct block_s *prev;
     struct block_s *next;
+    size_t sz;
     struct metadata_s *metadata;
 } block_t;
 
 #define ELEM_PTR(x) offsetof(ptr_t, x)
 #define MALLOC_INIT_SZ 10
 #define PAGE_SZ (getpagesize() * 2)
-#define METADATA_H_SZ sizeof(metadata_t)
+#define METADATA_H_SZ sizeof(mdata_t)
 #define BLOCK_H_SZ sizeof(block_t)
 
 #define BLOCK_OFFSET(x) (void *)((uintptr_t)x + BLOCK_H_SZ)
@@ -100,9 +101,9 @@ bool add_in_block_list(block_t **list, block_t *ptr, size_t sz);
 
 void *request_block(size_t sz);
 
-bool insert_into(metadata_t *new_ptr, size_t size);
+bool insert_into(mdata_t *new_ptr, size_t size);
 
-bool add_in_list(metadata_t **p_list, void *p_ptr);
+bool add_in_list(mdata_t **p_list, void *p_ptr);
 
 void *my_malloc(size_t size);
 
