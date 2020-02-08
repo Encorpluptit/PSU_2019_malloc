@@ -3,9 +3,7 @@
 
 #include <stdbool.h>
 #include <unistd.h>
-//#include <stddef.h>
 #include <stdint.h>
-#include <zconf.h>
 
 // Custom free macro, to reset at NULL value.
 /* #define FREE(x) free(x); x = NULL; */
@@ -17,19 +15,22 @@ enum {
 } EMemory;
 
 #ifdef _DEBUG_
-#include <stdio.h>
 
+#include <stdio.h>
+#include <string.h>
+
+#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
 #define dbg(x) write(1, x"\n", sizeof(x))
-#define dbg_local                               \
-    (printf("[ %s ] - [ %s():%d ]",             \
-            __FILE__,                           \
-            __func__,                           \
+#define dbg_local                                   \
+    (printf("[ %s ] - [ %s():%d ] ==> ",            \
+            __FILENAME__,                           \
+            __func__,                               \
             __LINE__))
-/*
-#define dbg(x, ...)                             \
-    dbg_local;                                  \
-    printf(x"\n", __VA_ARGS__)
-*/
+
+#define dbg_pf(x, ...)                              \
+    dbg_local;                                      \
+    printf(x"\n", __VA_ARGS__);
+
 
 #define dbg_begin(of, x, ...)                           \
     dbg_local;                                          \
@@ -57,42 +58,55 @@ enum {
 #define dbg_endf(x, ...)
 #endif /* _DEBUG_ */
 
-typedef struct ptr_s ptr_t;
-struct ptr_s {
-    ptr_t *next;
-    ptr_t *prev;
-    void *user_ptr;
+//typedef struct metadata_s metadata_t;
+typedef struct metadata_s {
+    struct metadata_s *next;
+//    struct metadata_s *prev;
     size_t size;
-    bool free;
+    void *user_ptr;
+//    bool free;
 //    void *data;
 //    char data[1];
-};
+} metadata_t;
 
-typedef struct control_struct_s {
-    ptr_t *alloc;
-    ptr_t *free;
-} ctrl_t;
+typedef struct block_s {
+    size_t sz;
+    struct block_s *next;
+    struct metadata_s *metadata;
+} block_t;
 
-#define HEADER_SZ offsetof(ptr_t, block)
+#define ELEM_PTR(x) offsetof(ptr_t, x)
+#define MALLOC_INIT_SZ 1000
 #define PAGE_SZ (getpagesize() * 2)
-#define MALLOC_INIT_SZ 10
+#define METADATA_H_SZ sizeof(metadata_t)
+#define BLOCK_H_SZ sizeof(block_t)
+
+#define BLOCK_OFFSET(x) (void *)((uintptr_t)x + BLOCK_H_SZ)
+#define METADATA_OFFSET(x) ((void *)((uintptr_t)x + METADATA_H_SZ))
 
 // Custom free macro, to reset at NULL value.
 /* #define FREE(x) free(x); x = NULL; */
 /* #define free(ptr) (my_free(&ptr)) */
 
-ptr_t **get_arena_alloc();
 
-ptr_t **get_arena_free();
+// size_control.c
+size_t align(size_t sz);
 
-ctrl_t *arena_control();
 
-bool insert_into(ptr_t *new_ptr, size_t size);
+// arena_control.c
+block_t *arena_control();
 
-bool add_in_list(ptr_t **p_list, void *p_ptr);
+bool add_in_block_list(block_t **list, block_t *ptr, size_t sz);
+
+void *request_block(size_t sz);
+
+bool insert_into(metadata_t *new_ptr, size_t size);
+
+bool add_in_list(metadata_t **p_list, void *p_ptr);
 
 void *my_malloc(size_t size);
 
+//bool add_in_block_list(block_t *list, block_t *ptr, size_t sz);
 //
 //void *calloc(size_t nmemb, size_t size);
 //
