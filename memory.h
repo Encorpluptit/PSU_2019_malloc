@@ -61,10 +61,10 @@ enum {
 //typedef struct metadata_s metadata_t;
 typedef struct metadata_s {
     struct metadata_s *next;
-//    struct metadata_s *prev;
+    struct metadata_s *prev;
     size_t sz;
     bool free;
-    void *user_ptr;
+//    void *user_ptr;
 } metadata_t;
 
 typedef struct block_s {

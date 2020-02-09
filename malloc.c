@@ -6,35 +6,27 @@
 
 static metadata_t *find_best_metadata(block_t *block, size_t sz) {
     metadata_t *head = block->metadata;
-    bool start = true;
+//    bool start = true;
 
-    for (metadata_t *tmp = head; tmp != head || start; tmp = tmp->next) {
+//    for (metadata_t *tmp = head; tmp != head || start; tmp = tmp->next) {
+    for (metadata_t *tmp = head; tmp ; tmp = tmp->next) {
         dbg_pf("[ BEST DATA SIZE ]: %zd", tmp->sz);
         if (tmp->free && tmp->sz >= sz)
             return tmp;
-        start = false;
+//        start = false;
     }
-//    for (metadata_t *tmp = block->metadata; tmp != head; tmp = tmp->next) {
-//        dbg_pf("[ BEST DATA SIZE ]: %zd", tmp->sz);
-//        if (tmp->free && tmp->sz >= sz)
-//            return tmp;
-//    }
-//    for (metadata_t *tmp = block->metadata; tmp->next; tmp = tmp->next)
-//        if (tmp->sz >= sz)
-//            return tmp;
     return NULL;
 }
 
 void *my_malloc(size_t sz) {
     sz = sz < 32 ? 32 + METADATA_H_SZ : sz + METADATA_H_SZ;
-//    sz = sz < 32 ? 32 + METADATA_H_SZ : sz + METADATA_H_SZ;
     block_t *head = arena_control();
     bool start = true;
     block_t *tmp = head;
     metadata_t *res = NULL;
 
     dbg_pf("[ MALLOC SIZE ]: %zd", sz);
-    dbg_pf("%p", head ? head : NULL);
+//    dbg_pf("%p", head ? head : NULL);
 //    for (block_t *tmp = head; tmp && (tmp != head || start); tmp = tmp->next) {
     for (; (tmp != head || start); tmp = tmp->next) {
         dbg("LOOP !!!!");
@@ -50,6 +42,6 @@ void *my_malloc(size_t sz) {
         res->free = false;
         return METADATA_OFFSET(res);
     }
-
+    //ADD BLOCK
     return NULL;
 }
