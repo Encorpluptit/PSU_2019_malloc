@@ -22,8 +22,8 @@ void test_memory(block_t *arena, char **TAB) {
          tmp = tmp->next, ++index) {
         dbg_pf("[ FILL LINE BLOCK DUMP ] Ptr: %p,\tSize: %zd", tmp, tmp->sz);
         for (data = tmp->metadata; data; data = data->next) {
-            dbg_pf("[ FILL LINE DATA DUMP ] Ptr: %p,\tSize: %zd\t User Ptr: %p",
-                   data, data->sz, METADATA_OFFSET(data));
+            dbg_pf("[ FILL LINE DATA DUMP ] Ptr: %p,\tSize: %zd\t User Ptr: %p,\tFree ? %s",
+                   data, data->sz, METADATA_OFFSET(data), data->free ? "Y" : "N");
             dbg_pf("[ FILL LINE DATA DIFF PTR ]: %zd", (uintptr_t) data - (uintptr_t) tmp);
             TAB[index] = METADATA_OFFSET(data);
             char *str = fill_line(data, TAB, index);
@@ -57,18 +57,7 @@ void split_test(block_t *arena) {
     split_block(&arena->metadata);
     split_block(&arena->metadata);
     split_block(&arena->metadata);
-//    split_block(&arena->metadata->next);
-//    split_block(&arena->metadata, align(400));
-//    split_block(&arena->metadata->next, align(900));
-//    split_block(&arena->metadata, align(arena->metadata->sz / 2));
-//    split_block(&arena->metadata, align(arena->metadata->sz / 2));
-//    split_block(&arena->metadata, align(arena->metadata->sz / 2));
-//    split_block(&arena->metadata, align(arena->metadata->sz / 2));
-//    split_block(&arena->metadata, align(arena->metadata->sz / 2));
-//    split_block(&arena->metadata, align(arena->metadata->sz / 2));
-//    split_block(&arena->metadata, align(arena->metadata->sz / 2));
-//    split_block(&arena->metadata, align(arena->metadata->sz / 2));
-//    split_block(&arena->metadata, align(arena->metadata->sz / 2));
+    split_block(&arena->metadata);
 }
 
 int main() {
@@ -77,8 +66,13 @@ int main() {
 
     dbg_pf("[ IN MAIN ] ==> Ptr: %p,\tUser Ptr: %p,\tSize: %zd",
            arena, BLOCK_OFFSET(arena), arena->sz);
-    my_malloc(80);
-    my_malloc(80);
+//    my_malloc(80);
+//    my_malloc(80);
+//    my_malloc(80);
+    void *ptr = my_malloc(1000);
+    ptr = my_malloc(1000);
+    ptr = my_malloc(1000);
+    dbg_pf("ptr: %p", ptr);
 //    split_test(arena);
     test_memory(arena, TAB);
     return 0;

@@ -5,13 +5,20 @@
 #include "memory.h"
 
 static metadata_t *find_best_metadata(__attribute__((unused))block_t *block, __attribute__((unused))size_t sz) {
-//    metadata_t *head = block->metadata;
+    metadata_t *head = block->metadata;
+    bool start = true;
 
-    for (metadata_t *tmp = block->metadata; tmp; tmp = tmp->next) {
+    for (metadata_t *tmp = head; tmp != head || start; tmp = tmp->next) {
         dbg_pf("[ BEST DATA SIZE ]: %zd", tmp->sz);
-        if (!(tmp->sz % 2) && tmp->sz >= sz)
+        if (tmp->free && tmp->sz >= sz)
             return tmp;
+        start = false;
     }
+//    for (metadata_t *tmp = block->metadata; tmp != head; tmp = tmp->next) {
+//        dbg_pf("[ BEST DATA SIZE ]: %zd", tmp->sz);
+//        if (tmp->free && tmp->sz >= sz)
+//            return tmp;
+//    }
 //    for (metadata_t *tmp = block->metadata; tmp->next; tmp = tmp->next)
 //        if (tmp->sz >= sz)
 //            return tmp;
@@ -19,7 +26,7 @@ static metadata_t *find_best_metadata(__attribute__((unused))block_t *block, __a
 }
 
 void *my_malloc(size_t sz) {
-    sz = sz < 32 ? 32 + METADATA_H_SZ : align(sz + METADATA_H_SZ);
+    sz = sz < 32 ? 32 + METADATA_H_SZ : sz + METADATA_H_SZ;
     block_t *head = arena_control();
     bool start = true;
     block_t *tmp = head;
@@ -31,18 +38,16 @@ void *my_malloc(size_t sz) {
     for (; (tmp != head || start); tmp = tmp->next) {
         dbg("LOOP !!!!");
         if ((res = find_best_metadata(tmp, sz))) {
-            dbg_pf("FOUND !!!! : %p", res);
+            dbg_pf("FOUND !!!! : %p\t%zd", res, res->sz);
             break;
         }
-//        if (find_best_metadata(tmp, sz))
-//            break;
         start = false;
     }
     if (tmp != head || start) {
-        for (; res->sz > sz * 2; )
+        for (; res->sz >= sz * 2; )
             split_block(&res);
-//        res->free = false;
-//        return METADATA_OFFSET(res);
+        res->free = false;
+        return METADATA_OFFSET(res);
     }
 
     return NULL;

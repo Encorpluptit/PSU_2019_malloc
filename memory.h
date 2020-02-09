@@ -63,8 +63,8 @@ typedef struct metadata_s {
     struct metadata_s *next;
     struct metadata_s *prev;
     size_t sz;
-    void *user_ptr;
-//    bool free;
+//    void *user_ptr;
+    bool free;
 } metadata_t;
 
 typedef struct block_s {
