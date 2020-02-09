@@ -9,7 +9,7 @@ static metadata_t *find_best_metadata(__attribute__((unused))block_t *block, __a
 
     for (metadata_t *tmp = block->metadata; tmp; tmp = tmp->next) {
         dbg_pf("[ BEST DATA SIZE ]: %zd", tmp->sz);
-        if (tmp->sz >= sz)
+        if (!(tmp->sz % 2) && tmp->sz >= sz)
             return tmp;
     }
 //    for (metadata_t *tmp = block->metadata; tmp->next; tmp = tmp->next)
@@ -19,10 +19,11 @@ static metadata_t *find_best_metadata(__attribute__((unused))block_t *block, __a
 }
 
 void *my_malloc(size_t sz) {
-    sz = sz < 32 ? 32 + METADATA_H_SZ : align(sz - METADATA_H_SZ);
+    sz = sz < 32 ? 32 + METADATA_H_SZ : align(sz + METADATA_H_SZ);
     block_t *head = arena_control();
     bool start = true;
-    block_t *tmp = head; metadata_t *res = NULL;
+    block_t *tmp = head;
+    metadata_t *res = NULL;
 
     dbg_pf("[ MALLOC SIZE ]: %zd", sz);
     dbg_pf("%p", head ? head : NULL);
@@ -38,8 +39,10 @@ void *my_malloc(size_t sz) {
         start = false;
     }
     if (tmp != head || start) {
-        dbg("Yes !!!!");
-        split_block(&res, sz);
+        for (; res->sz > sz * 2; )
+            split_block(&res);
+//        res->free = false;
+//        return METADATA_OFFSET(res);
     }
 
     return NULL;
