@@ -9,7 +9,7 @@ void *request_block(size_t sz) {
 
     if (heap == (void *) -1)
         return NULL;
-    dbg_pf("REQUEST BLOCK: %zd, \t%p", align(sz - 1), heap);
+//    dbg_pf("REQUEST BLOCK: %zd, \t%p", align(sz - 1), heap);
     return heap;
 }
 
@@ -20,10 +20,9 @@ static block_t *init_block(block_t *ptr, size_t sz, block_t *list) {
             .metadata = BLOCK_OFFSET(ptr)};
     (*ptr->metadata) = (metadata_t) {
             .sz = sz - BLOCK_H_SZ - METADATA_H_SZ,
-            .next = NULL, .prev = NULL,
-//            .next = NULL, .free = true,
+//            .next = NULL, .prev = NULL,
+            .next = NULL, .user_ptr = METADATA_OFFSET(ptr->metadata),
             .free = true};
-//            .user_ptr = METADATA_OFFSET(BLOCK_OFFSET(ptr))};
     if (list) {
         if (!list->next)
             list->next = ptr;
@@ -41,19 +40,15 @@ bool add_in_block_list(block_t **p_list, block_t *ptr, size_t sz) {
 
     if (!list) {
         *p_list = init_block(ptr, sz, NULL);
-        dbg_pf("[ADD BLOCK - ARENA INIT] %p,\tSize: %zd",
-               *p_list, (*p_list)->sz);
-        dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
-               (*p_list)->metadata, (*p_list)->metadata->sz);
+//        dbg_pf("[ADD BLOCK - ARENA INIT] %p,\tSize: %zd",
+//               *p_list, (*p_list)->sz);
+//        dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
+//               (*p_list)->metadata, (*p_list)->metadata->sz);
         return true;
     }
     list->prev = init_block(ptr, sz, list);
-//    for (; list->next && list->next != *p_list; list = list->next);
-//    for (; list->next && list->next != *p_list; list = list->next) {
-    //        dbg_pf("[ ADD BLOCK LOOP ]: %p", list);
-//    }
-    dbg_pf("[ ADD BLOCK LOOP ==> END ]: %p", list);
-    dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
-            list->metadata, list->metadata->sz);
+//    dbg_pf("[ ADD BLOCK LOOP ==> END ]: %p", list);
+//    dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
+//            list->metadata, list->metadata->sz);
     return true;
 }

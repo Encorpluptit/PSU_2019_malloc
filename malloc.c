@@ -4,7 +4,7 @@
 
 #include "memory.h"
 
-static metadata_t *find_best_metadata(__attribute__((unused))block_t *block, __attribute__((unused))size_t sz) {
+static metadata_t *find_best_metadata(block_t *block, size_t sz) {
     metadata_t *head = block->metadata;
     bool start = true;
 
@@ -27,6 +27,7 @@ static metadata_t *find_best_metadata(__attribute__((unused))block_t *block, __a
 
 void *my_malloc(size_t sz) {
     sz = sz < 32 ? 32 + METADATA_H_SZ : sz + METADATA_H_SZ;
+//    sz = sz < 32 ? 32 + METADATA_H_SZ : sz + METADATA_H_SZ;
     block_t *head = arena_control();
     bool start = true;
     block_t *tmp = head;
