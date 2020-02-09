@@ -28,7 +28,7 @@ void *my_malloc(size_t sz) {
     dbg_pf("[ MALLOC SIZE ]: %zd", sz);
 //    dbg_pf("%p", head ? head : NULL);
 //    for (block_t *tmp = head; tmp && (tmp != head || start); tmp = tmp->next) {
-    for (; (tmp != head || start); tmp = tmp->next) {
+    for (; tmp && (tmp != head || start); tmp = tmp->next) {
         dbg("LOOP !!!!");
         if ((res = find_best_metadata(tmp, sz))) {
             dbg_pf("FOUND !!!! : %p\t%zd", res, res->sz);

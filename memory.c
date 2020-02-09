@@ -21,17 +21,18 @@ void test_memory(block_t *arena, char **TAB) {
          tmp && (!*TAB || tmp != arena);
          tmp = tmp->next, ++index) {
         dbg_pf("[ FILL LINE BLOCK DUMP ] Ptr: %p,\tSize: %zd", tmp, tmp->sz);
-        bool start = true;
+//        bool start = true;
 //        for (data = tmp->metadata; data != tmp->metadata || start; data = data->next) {
-        for (data = tmp->metadata; (data && data != tmp->metadata) || start; data = data->next) {
-//        for (data = tmp->metadata; data; data = data->next) {
+//        for (data = tmp->metadata; (data && data != tmp->metadata) || start; data = data->prev) {
+//        for (data = tmp->metadata; (data && data != tmp->metadata) || start; data = data->next) {
+        for (data = tmp->metadata; data; data = data->next) {
             dbg_pf("[ FILL LINE DATA DUMP ] Ptr: %p,\tSize: %zd\t User Ptr: %p,\tFree ? %s",
                    data, data->sz, METADATA_OFFSET(data), data->free ? "Y" : "N");
             dbg_pf("[ FILL LINE DATA DIFF PTR ]: %zd", (uintptr_t) data - (uintptr_t) tmp);
             TAB[index] = METADATA_OFFSET(data);
             char *str = fill_line(data, TAB, index);
             write(1, str, 4);
-            start = false;
+//            start = false;
         }
     }
 }
@@ -39,8 +40,8 @@ void test_memory(block_t *arena, char **TAB) {
 void split(block_t *arena) {
     split_block(&arena->metadata);
     split_block(&arena->metadata->next);
-//    split_block(&arena->metadata->next->next);
-//    split_block(&arena->metadata->next);
+    split_block(&arena->metadata->next->next);
+    split_block(&arena->metadata->next);
 }
 
 void simple_malloc(void) {
@@ -68,7 +69,7 @@ int main() {
 
     dbg_pf("[ IN MAIN ] ==> Ptr: %p,\tUser Ptr: %p,\tSize: %zd",
            arena, BLOCK_OFFSET(arena), arena->sz);
-    split(arena);
+//    split(arena);
 //    simple_malloc();
 //    smalls_malloc();
     test_memory(arena, TAB);

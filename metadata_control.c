@@ -16,13 +16,13 @@ bool split_block(metadata_t **p_block) {
 
     (*new_block) = (metadata_t) {
         .sz = block->sz - offset, .free = true,
-        .next = block->next ? block->next : block,
-        .prev = block->prev ? block->prev : block,};
+        .next = block->next,
+        .prev = block,};
 //            .next = block->next,};
     (*block) = (metadata_t) {
         .sz = block->sz - offset, .free = true,
-        .prev = block->prev ? block->prev : block,
-            .next = new_block,};
+        .prev = block->prev,
+        .next = new_block,};
 
     dbg_pf("SPLIT DIFF: %zd", (uintptr_t) new_block - (uintptr_t) block);
     dbg_pf("SIZE: ori: %zd, \tsum: %zd,\tcurr: %zd,\tnew: %zd",
