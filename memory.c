@@ -4,74 +4,109 @@
 
 #include "memory.h"
 
-char *fill_line(metadata_t *data, char **TAB, size_t index) {
+char *fill_line(metadata_t *data, char **tab, size_t index) {
     for (size_t i = 0; i < data->sz; ++i)
-        TAB[index][i] = 'A' + (char) index;
-    TAB[index][data->sz - 3] = 'O';
-    TAB[index][data->sz - 2] = 'K';
-    TAB[index][data->sz - 1] = '\n';
-    return (char *) (TAB[index]) + data->sz - 4;
+        tab[index][i] = 'A' + (char) index;
+    tab[index][data->sz - 3] = 'O';
+    tab[index][data->sz - 2] = 'K';
+    tab[index][data->sz - 1] = '\n';
+    return (char *) (tab[index]) + data->sz - 4;
 }
 
-void test_memory(block_t *arena, char **TAB) {
+void test_memory(char **tab) {
+    block_t *arena = arena_control();
     size_t index = 0;
     metadata_t *data = NULL;
 
-    for (block_t *tmp = arena;
-         tmp && (!*TAB || tmp != arena);
-         tmp = tmp->next, ++index) {
+    for (block_t *tmp = arena; tmp; tmp = tmp->next, ++index) {
         dbg_pf("[ FILL LINE BLOCK DUMP ] Ptr: %p,\tSize: %zd", tmp, tmp->sz);
-//        bool start = true;
-//        for (data = tmp->metadata; data != tmp->metadata || start; data = data->next) {
-//        for (data = tmp->metadata; (data && data != tmp->metadata) || start; data = data->prev) {
-//        for (data = tmp->metadata; (data && data != tmp->metadata) || start; data = data->next) {
         for (data = tmp->metadata; data; data = data->next) {
             dbg_pf("[ FILL LINE DATA DUMP ] Ptr: %p,\tSize: %zd\t User Ptr: %p,\tFree ? %s",
                    data, data->sz, METADATA_OFFSET(data), data->free ? "Y" : "N");
             dbg_pf("[ FILL LINE DATA DIFF PTR ]: %zd", (uintptr_t) data - (uintptr_t) tmp);
-            TAB[index] = METADATA_OFFSET(data);
-            char *str = fill_line(data, TAB, index);
+            tab[index] = METADATA_OFFSET(data);
+            char *str = fill_line(data, tab, index);
             write(1, str, 4);
-//            start = false;
         }
     }
 }
 
-void split(block_t *arena) {
-    split_block(&arena->metadata);
-    split_block(&arena->metadata->next);
-    split_block(&arena->metadata->next->next);
-    split_block(&arena->metadata->next);
+void simple_split(block_t *arena) {
+    split_metadata(&arena->metadata);
+    split_metadata(&arena->metadata->next);
+    split_metadata(&arena->metadata->next->next);
+    split_metadata(&arena->metadata->next);
+}
+
+void simple_merge(block_t *arena) {
+    split_metadata(&arena->metadata);
+    merge_metadata(arena->metadata, arena->metadata->next);
+    split_metadata(&arena->metadata);
+    merge_metadata(arena->metadata, arena->metadata->next);
+}
+
+void mass_merge(block_t *arena) {
+    for (block_t *tmp = arena; tmp; tmp = tmp->next)
+        for (metadata_t *m = tmp->metadata; m; m = m->next)
+            while (split_metadata(&m));
+    for (block_t *tmp = arena; tmp; tmp = tmp->next)
+        merge_metadata(tmp->metadata, tmp->metadata->next);
 }
 
 void simple_malloc(void) {
+    void *ptr = NULL;
+
     my_malloc(80);
     my_malloc(80);
     my_malloc(80);
-    my_malloc(900);
-    my_malloc(900);
-    my_malloc(900);
+    my_malloc(1000);
+    my_malloc(1000);
+    my_malloc(1000);
     my_malloc(1500);
     my_malloc(1500);
     my_malloc(3900);
-    void *ptr = my_malloc(3900);
+    ptr = my_malloc(3900);
     dbg_pf("ptr: %p", ptr);
 }
 
+void big_one_malloc(void) {
+    size_t limit = 50000;
+    char *test = my_malloc(limit + 1);
+
+    for (size_t i = 0; i < limit; ++i)
+        test[i] = '&';
+}
+
 void smalls_malloc(void) {
-    for (size_t i  = 0; i < MALLOC_INIT_SZ * 50; ++i)
-        my_malloc(1);
+    size_t sz = MALLOC_INIT_SZ * 80;
+    char *tab[sz];
+
+    for (size_t i = 0; i < sz; ++i) {
+        tab[i] = my_malloc(15);
+        tab[i][0] = 'O';
+        tab[i][1] = 'K';
+        tab[i][2] = '\n';
+    }
+    for (size_t i = 0; i < sz; ++i)
+        write(1, tab[i], strlen(tab[i]));
+//        write(1, tab[i], 3);
+//    block_t *arena = arena_control();
+//    merge_metadata(arena->metadata, arena->metadata->next);
 }
 
 int main() {
     block_t *arena = arena_control();
-    char *TAB[MALLOC_INIT_SZ] = {0};
+    char *tab[MALLOC_INIT_SZ] = {0};
 
     dbg_pf("[ IN MAIN ] ==> Ptr: %p,\tUser Ptr: %p,\tSize: %zd",
            arena, BLOCK_OFFSET(arena), arena->sz);
-//    split(arena);
+//    simple_split(arena);
+//    simple_merge(arena);
+//    mass_merge(arena);
 //    simple_malloc();
-//    smalls_malloc();
-    test_memory(arena, TAB);
+    smalls_malloc();
+//    big_one_malloc();
+    void *test = my_malloc(1);
+    test_memory(tab);
     return 0;
 }

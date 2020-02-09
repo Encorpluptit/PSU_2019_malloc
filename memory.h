@@ -12,7 +12,7 @@
 enum {
     STOCK,
     GIVE,
-} EMemory;
+} memory_e;
 
 #ifdef _DEBUG_
 
@@ -75,9 +75,10 @@ typedef struct block_s {
 } block_t;
 
 #define ELEM_PTR(x) offsetof(ptr_t, x)
-#define MALLOC_INIT_SZ 3
-#define PAGE_SZ (getpagesize() * 2)
+#define MALLOC_INIT_SZ 2
+#define PAGE_SZ (arena_get_page_size() * 2)
 #define METADATA_H_SZ sizeof(metadata_t)
+#define MIN_METADATA_SZ (METADATA_H_SZ * 2)
 #define BLOCK_H_SZ sizeof(block_t)
 
 #define BLOCK_OFFSET(x) (void *)((uintptr_t)x + BLOCK_H_SZ)
@@ -95,6 +96,7 @@ size_t align(size_t sz);
 // arena_control.c
 block_t *arena_control();
 
+int arena_get_page_size(void);
 
 
 // blo_alloc.c
@@ -104,10 +106,11 @@ void *request_block(size_t sz);
 
 
 
-// block_control.c
-bool split_block(metadata_t **p_block);
-//bool split_block(metadata_t **p_block, size_t offset);
+// metadata_control.c
+bool split_metadata(metadata_t **p_metadata);
+//bool split_metadata(metadata_t **p_block, size_t offset);
 
+bool merge_metadata(metadata_t *metadata, metadata_t *to_merge);
 
 
 bool insert_into(metadata_t *new_ptr, size_t sz);

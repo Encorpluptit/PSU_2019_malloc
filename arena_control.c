@@ -28,3 +28,11 @@ block_t *arena_control() {
     dbg_pf("GIVE ARENA: %p", arena);
     return arena;
 }
+
+int arena_get_page_size(void) {
+    static int page_sz = 0;
+
+    if (!page_sz)
+        page_sz = getpagesize();
+    return page_sz;
+}

@@ -4,34 +4,39 @@
 
 #include "memory.h"
 
-//bool split_block(metadata_t **p_block, size_t offset) {
-bool split_block(metadata_t **p_block) {
-    metadata_t *block = *p_block;
-    size_t offset = align(block->sz / 2);
-    metadata_t *new_block = (metadata_t *)((uintptr_t)block + offset);
-//    metadata_t *new_block = (metadata_t *)((uintptr_t)block - (uintptr_t)(METADATA_H_SZ) + (uintptr_t)offset);
+bool split_metadata(metadata_t **p_metadata) {
+//    dbg_pf("SPLIT BEGIN SIZE: Offset: %zd", (*p_metadata)->sz);
+    metadata_t *metadata = *p_metadata;
+    size_t offset = align(metadata->sz / 2);
+    metadata_t *new_metadata = (metadata_t *)((uintptr_t)metadata + offset);
+//    metadata_t *new_metadata = (metadata_t *)((uintptr_t)metadata  + offset - METADATA_H_SZ);
 
-    dbg_pf("SIZE SPLIT: Offset: %zd\t Old/next Ptr: %p/%p", offset, block, new_block);
-    size_t sz_tmp = block->sz;
-
-    (*new_block) = (metadata_t) {
-        .sz = block->sz - offset, .free = true,
-        .next = block->next,
-        .prev = block,};
-//            .next = block->next,};
-    (*block) = (metadata_t) {
-        .sz = block->sz - offset, .free = true,
-        .prev = block->prev,
-        .next = new_block,};
-
-    dbg_pf("SPLIT DIFF: %zd", (uintptr_t) new_block - (uintptr_t) block);
+    if ((*p_metadata)->sz <= MIN_METADATA_SZ)
+        return false;
+    dbg_pf("SIZE SPLIT: Offset: %zd\t Old/next Ptr: %p/%p", offset, metadata, new_metadata);
+    size_t sz_tmp = metadata->sz;
+    (*new_metadata) = (metadata_t) {
+        .sz = metadata->sz - offset, .free = true,
+        .prev = metadata,
+        .next = metadata->next,};
+    (*metadata) = (metadata_t) {
+        .sz = metadata->sz - offset, .free = true,
+        .prev = metadata->prev,
+        .next = new_metadata,};
+    dbg_pf("SPLIT DIFF: %zd", (uintptr_t) new_metadata - (uintptr_t) metadata);
     dbg_pf("SIZE: ori: %zd, \tsum: %zd,\tcurr: %zd,\tnew: %zd",
-            sz_tmp, block->sz + new_block->sz + 2 * METADATA_H_SZ, block->sz, new_block->sz);
-//    *p_block = block;
+           sz_tmp, metadata->sz + new_metadata->sz + 2 * METADATA_H_SZ, metadata->sz, new_metadata->sz);
+//    *p_metadata = metadata;
     return true;
 }
 
-//
-//bool merge_block(metadata_t **p_bloc) {
-//    if (!(*p_bloc)->next && )
-//}
+
+bool merge_metadata(metadata_t *metadata, metadata_t *to_merge) {
+    if (!to_merge || !to_merge->free || !metadata || !metadata->free)
+        return false;
+    metadata->next = to_merge->next;
+    metadata->sz += to_merge->sz + 2 * METADATA_H_SZ;
+    if (to_merge->next)
+        to_merge->next->prev = metadata;
+    return (merge_metadata(metadata->prev, metadata) || merge_metadata(metadata, metadata->next));
+}

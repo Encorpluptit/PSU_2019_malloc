@@ -2,46 +2,58 @@
 // Created by dbernard on 2/8/20.
 //
 
+#include <stdlib.h>
 #include "memory.h"
+
+static void *malloc_block(block_t *arena, size_t sz) {
+    sz = align(sz + MIN_METADATA_SZ);
+    block_t *heap = request_block(sz);
+
+    if (!heap)
+        exit(84);
+    dbg_pf("[ MALLOC WHOLE BLOCK SIZE ]: %zd", sz);
+    add_in_block_list(&arena, heap, sz);
+    return METADATA_OFFSET(heap->metadata);
+}
 
 static metadata_t *find_best_metadata(block_t *block, size_t sz) {
     metadata_t *head = block->metadata;
-//    bool start = true;
 
-//    for (metadata_t *tmp = head; tmp != head || start; tmp = tmp->next) {
-    for (metadata_t *tmp = head; tmp ; tmp = tmp->next) {
+    for (metadata_t *tmp = head; tmp; tmp = tmp->next) {
         dbg_pf("[ BEST DATA SIZE ]: %zd", tmp->sz);
         if (tmp->free && tmp->sz >= sz)
             return tmp;
-//        start = false;
     }
     return NULL;
 }
 
+static void *resize_metadata(metadata_t *metadata, size_t sz) {
+//    for (; metadata->sz >= align(sz);)
+    for (; metadata->sz > sz + METADATA_H_SZ;)
+        split_metadata(&metadata);
+    metadata->free = false;
+    return METADATA_OFFSET(metadata);
+}
+
 void *my_malloc(size_t sz) {
+//    sz = align(sz + METADATA_H_SZ);
     sz = sz < 32 ? 32 + METADATA_H_SZ : sz + METADATA_H_SZ;
     block_t *head = arena_control();
-    bool start = true;
-    block_t *tmp = head;
     metadata_t *res = NULL;
 
     dbg_pf("[ MALLOC SIZE ]: %zd", sz);
-//    dbg_pf("%p", head ? head : NULL);
-//    for (block_t *tmp = head; tmp && (tmp != head || start); tmp = tmp->next) {
-    for (; tmp && (tmp != head || start); tmp = tmp->next) {
-        dbg("LOOP !!!!");
+    if (sz + MIN_METADATA_SZ > (size_t) PAGE_SZ)
+        return malloc_block(head, sz);
+    for (block_t *tmp = head; tmp; tmp = tmp->next) {
         if ((res = find_best_metadata(tmp, sz))) {
-            dbg_pf("FOUND !!!! : %p\t%zd", res, res->sz);
+//            dbg_pf("FOUND !!!! : %p\t%zd", res, res->sz);
             break;
         }
-        start = false;
     }
-    if (tmp != head || start) {
-        for (; res->sz >= sz * 2; )
-            split_block(&res);
-        res->free = false;
-        return METADATA_OFFSET(res);
-    }
+    if (res)
+        return resize_metadata(res, sz);
     //ADD BLOCK
-    return NULL;
+//    return NULL;
+    malloc_block(head, PAGE_SZ);
+    return my_malloc(sz);
 }
