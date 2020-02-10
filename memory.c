@@ -23,7 +23,7 @@ void test_memory(char **tab) {
         for (data = tmp->metadata; data; data = data->next) {
             dbg_pf("[ FILL LINE DATA DUMP ] Ptr: %p,\tSize: %zd\t User Ptr: %p,\tFree ? %s",
                    data, data->sz, METADATA_OFFSET(data), data->free ? "Y" : "N");
-            dbg_pf("[ FILL LINE DATA DIFF PTR ]: %zd", (uintptr_t) data - (uintptr_t) tmp);
+            dbg_pf("[ FILL LINE DATA DIFF PTR ]: %zd", (uintptr_t) data - (uintptr_t) tmp - BLOCK_H_SZ);
             tab[index] = METADATA_OFFSET(data);
             char *str = fill_line(data, tab, index);
             write(1, str, 4);
@@ -42,6 +42,7 @@ void simple_merge(block_t *arena) {
     split_metadata(&arena->metadata);
     merge_metadata(arena->metadata, arena->metadata->next);
     split_metadata(&arena->metadata);
+    split_metadata(&arena->metadata->next);
     merge_metadata(arena->metadata, arena->metadata->next);
 }
 
