@@ -6,7 +6,7 @@
 #include "memory.h"
 
 static void *malloc_block(block_t *arena, size_t sz) {
-    sz = align(sz + MIN_METADATA_SZ);
+//    sz = align(sz + MIN_METADATA_SZ);
     block_t *heap = request_block(sz);
 
     if (!heap)
@@ -36,8 +36,8 @@ static void *resize_metadata(metadata_t *metadata, size_t sz) {
 }
 
 void *my_malloc(size_t sz) {
-//    sz = align(sz + METADATA_H_SZ);
-    sz = sz < 32 ? 32 + METADATA_H_SZ : sz + METADATA_H_SZ;
+    sz = align(sz + METADATA_H_SZ);
+//    sz = sz < 32 ? 32 + METADATA_H_SZ : sz + METADATA_H_SZ;
     block_t *head = arena_control();
     metadata_t *res = NULL;
 

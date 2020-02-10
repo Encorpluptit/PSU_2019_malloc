@@ -127,6 +127,9 @@ void *my_malloc(size_t sz);
 //
 //void *reallocarray(void *ptr, size_t nmemb, size_t size);
 //
+
+void my_free(void *ptr);
+
 //void my_free(void **p_to_free);
 
 //void hello(void);

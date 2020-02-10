@@ -77,19 +77,27 @@ void big_one_malloc(void) {
         test[i] = '&';
 }
 
+void smalls_free(void) {
+//    size_t sz = MALLOC_INIT_SZ * 100;
+    size_t sz = 3;
+    char *tab[sz];
+
+    for (size_t i = 0; i < sz; ++i)
+        tab[i] = my_malloc(15);
+    for (size_t i = 0; i < sz; ++i)
+        my_free(tab[i]);
+}
+
 void smalls_malloc(void) {
-    size_t sz = MALLOC_INIT_SZ * 80;
+    size_t sz = MALLOC_INIT_SZ * 70;
     char *tab[sz];
 
     for (size_t i = 0; i < sz; ++i) {
         tab[i] = my_malloc(15);
-        tab[i][0] = 'O';
-        tab[i][1] = 'K';
-        tab[i][2] = '\n';
+        tab[i] = (char *) {"<== OK ==>\n"};
     }
     for (size_t i = 0; i < sz; ++i)
         write(1, tab[i], strlen(tab[i]));
-//        write(1, tab[i], 3);
 //    block_t *arena = arena_control();
 //    merge_metadata(arena->metadata, arena->metadata->next);
 }
@@ -104,9 +112,9 @@ int main() {
 //    simple_merge(arena);
 //    mass_merge(arena);
 //    simple_malloc();
-    smalls_malloc();
+//    smalls_malloc();
+    smalls_free();
 //    big_one_malloc();
-    void *test = my_malloc(1);
     test_memory(tab);
     return 0;
 }

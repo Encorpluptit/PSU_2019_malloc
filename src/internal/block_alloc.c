@@ -5,11 +5,13 @@
 #include "memory.h"
 
 void *request_block(size_t sz) {
-    void *heap = sbrk(align(sz - 1));
+    size_t new_size = align(sz - 1);
+    void *heap = sbrk(new_size);
 
+    dbg_pf("REQUEST BLOCK: %zd, \t%p", new_size, heap);
     if (heap == (void *) -1)
         return NULL;
-//    dbg_pf("REQUEST BLOCK: %zd, \t%p", align(sz - 1), heap);
+    memset(heap, 0, new_size);
     return heap;
 }
 
