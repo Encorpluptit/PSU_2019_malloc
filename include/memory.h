@@ -75,7 +75,7 @@ typedef struct block_s {
 } block_t;
 
 #define ELEM_PTR(x) offsetof(ptr_t, x)
-#define MALLOC_INIT_SZ 2
+#define MALLOC_INIT_SZ 10
 #define PAGE_SZ (arena_get_page_size() * 2)
 #define METADATA_H_SZ sizeof(metadata_t)
 #define MIN_METADATA_SZ (METADATA_H_SZ * 2)
@@ -84,46 +84,52 @@ typedef struct block_s {
 #define BLOCK_OFFSET(x) (void *)((uintptr_t)x + BLOCK_H_SZ)
 #define METADATA_OFFSET(x) ((void *)((uintptr_t)x + METADATA_H_SZ))
 
+#ifndef INTERNAL
+#define INTERNAL
+//#define INTERNAL __attribute__((visibility ("hidden")))
+#endif /* HIDDEN */
+
 // Custom free macro, to reset at NULL value.
 /* #define FREE(x) free(x); x = NULL; */
 /* #define free(ptr) (my_free(&ptr)) */
 
 
 // size_control.c
-size_t align(size_t sz);
+INTERNAL size_t align(size_t sz);
 
 
 // arena_control.c
-block_t *arena_control();
+INTERNAL block_t *arena_control();
 
-int arena_get_page_size(void);
+INTERNAL int arena_get_page_size(void);
 
 
-// blo_alloc.c
-bool add_in_block_list(block_t **list, block_t *ptr, size_t sz);
+// block_alloc.c
+INTERNAL bool add_in_block_list(block_t **list, block_t *ptr, size_t sz);
 
-void *request_block(size_t sz);
+INTERNAL void *request_block(size_t sz);
 
 
 
 // metadata_control.c
-bool split_metadata(metadata_t **p_metadata);
+INTERNAL bool split_metadata(metadata_t **p_metadata);
 //bool split_metadata(metadata_t **p_block, size_t offset);
 
-bool merge_metadata(metadata_t *metadata, metadata_t *to_merge);
+INTERNAL bool merge_metadata(metadata_t *metadata, metadata_t *to_merge);
+INTERNAL bool _merge_metadata(metadata_t *metadata);
 
+metadata_t *find_ptr(void *ptr);
 
-bool insert_into(metadata_t *new_ptr, size_t sz);
+//bool insert_into(metadata_t *new_ptr, size_t sz);
+//
+//bool add_in_list(metadata_t **p_list, void *p_ptr);
 
-bool add_in_list(metadata_t **p_list, void *p_ptr);
-
+// API
 void *my_malloc(size_t sz);
 
-//bool add_in_block_list(block_t *list, block_t *ptr, size_t sz);
-//
-//void *calloc(size_t nmemb, size_t size);
-//
-//void *realloc(void *ptr, size_t size);
+void *my_calloc(size_t nmem, size_t sz);
+
+void *my_realloc(void *ptr, size_t sz);
 //
 //void *reallocarray(void *ptr, size_t nmemb, size_t size);
 //

@@ -36,11 +36,15 @@ LIB_FLAG			=	lib
 #############################################################################################################
 MAIN_FILE		= 	memory.c
 
-SRC_FILES		=	api/malloc.c                        \
-				internal/arena_control.c            \
-				internal/block_alloc.c              \
-				internal/metadata_control.c         \
-				internal/size_control.c             \
+SRC_FILES		=	api/malloc.c				\
+				api/calloc.c				\
+				api/realloc.c				\
+				api/free.c				\
+				internal/arena_control.c		\
+				internal/block_alloc.c			\
+				internal/metadata_control.c		\
+				internal/size_control.c		\
+				internal/find_ptr.c			\
 
 TSRC_FILES		=	#						\
 

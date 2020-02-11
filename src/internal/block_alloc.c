@@ -2,10 +2,12 @@
 // Created by dbernard on 2/8/20.
 //
 
+#include <string.h>
 #include "memory.h"
 
-void *request_block(size_t sz) {
-    size_t new_size = align(sz - 1);
+INTERNAL void *request_block(size_t sz) {
+//    size_t new_size = align(sz - 1);
+    size_t new_size = sz;
     void *heap = sbrk(new_size);
 
     dbg_pf("REQUEST BLOCK: %zd, \t%p", new_size, heap);
@@ -26,14 +28,14 @@ static block_t *init_block(block_t *ptr, size_t sz, block_t *list) {
             .free = true};
     if (list) {
         ptr->prev = list;
-        ptr->next = list->next;
+//        ptr->next = list->next;
         list->next = ptr;
     }
     return ptr;
 }
 
 
-bool add_in_block_list(block_t **p_list, block_t *ptr, size_t sz) {
+INTERNAL bool add_in_block_list(block_t **p_list, block_t *ptr, size_t sz) {
     block_t *list = *p_list;
 
     if (!list) {

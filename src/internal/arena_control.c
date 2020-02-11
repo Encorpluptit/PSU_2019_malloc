@@ -16,7 +16,7 @@ static void *init_arena(block_t *arena) {
     return arena;
 }
 
-block_t *arena_control() {
+INTERNAL block_t *arena_control() {
     static block_t *arena = NULL;
 
     if (!arena) {
@@ -29,7 +29,7 @@ block_t *arena_control() {
     return arena;
 }
 
-int arena_get_page_size(void) {
+INTERNAL int arena_get_page_size(void) {
     static int page_sz = 0;
 
     if (!page_sz)

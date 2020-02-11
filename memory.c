@@ -6,7 +6,7 @@
 
 char *fill_line(metadata_t *data, char **tab, size_t index) {
     for (size_t i = 0; i < data->sz; ++i)
-        tab[index][i] = 'A' + (char) index;
+        tab[index][i] = 'A' + (char) (index);
     tab[index][data->sz - 3] = 'O';
     tab[index][data->sz - 2] = 'K';
     tab[index][data->sz - 1] = '\n';
@@ -78,13 +78,25 @@ void big_one_malloc(void) {
         test[i] = '&';
 }
 
+void big_malloc(void) {
+    size_t limit = 50000;
+    size_t loop = 50;
+    void *tab[limit];
+    char *test = my_malloc(limit + 1);
+
+//    for (size_t i = 0; i < limit; ++i)
+//        test[i] = '&';
+    for (size_t i = 0; i < loop; ++i)
+        tab[i] = my_malloc(limit);
+}
+
 void smalls_free(void) {
-//    size_t sz = MALLOC_INIT_SZ * 100;
-    size_t sz = 3;
+    size_t sz = MALLOC_INIT_SZ * 10;
+//    size_t sz = 10;
     char *tab[sz];
 
     for (size_t i = 0; i < sz; ++i)
-        tab[i] = my_malloc(15);
+        tab[i] = my_malloc(1000);
     for (size_t i = 0; i < sz; ++i)
         my_free(tab[i]);
 }
@@ -95,12 +107,13 @@ void smalls_malloc(void) {
 
     for (size_t i = 0; i < sz; ++i) {
         tab[i] = my_malloc(15);
-        tab[i] = (char *) {"<== OK ==>\n"};
+        my_free(tab[i]);
+//        tab[i] = (char *) {"<== OK ==>\n"};
     }
-    for (size_t i = 0; i < sz; ++i)
-        write(1, tab[i], strlen(tab[i]));
-//    block_t *arena = arena_control();
-//    merge_metadata(arena->metadata, arena->metadata->next);
+//    for (size_t i = 0; i < sz; ++i)
+//        write(1, tab[i], strlen(tab[i]));
+//    for (size_t i = 0; i < sz; ++i)
+//        my_free(tab[i]);
 }
 
 int main() {
@@ -113,9 +126,13 @@ int main() {
 //    simple_merge(arena);
 //    mass_merge(arena);
 //    simple_malloc();
-//    smalls_malloc();
+    smalls_malloc();
     smalls_free();
 //    big_one_malloc();
+//    big_malloc();
     test_memory(tab);
+//    void *test = my_malloc(500);
+//    test = my_realloc(test, 400);
+    dbg("MDR ?");
     return 0;
 }
