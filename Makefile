@@ -317,7 +317,7 @@ TITLE			=	"\e[1;4;31m"
 ####################
 # Rule for "make"
 .PHONY: all
-all: BUILD_LIB $(PROJECT)
+# all: BUILD_LIB $(PROJECT)
 # all: BUILD_LIB
 
 ####################

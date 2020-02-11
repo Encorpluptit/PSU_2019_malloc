@@ -125,16 +125,16 @@ metadata_t *find_ptr(void *ptr);
 //bool add_in_list(metadata_t **p_list, void *p_ptr);
 
 // API
-void *my_malloc(size_t sz);
+void *malloc(size_t sz);
 
-void *my_calloc(size_t nmem, size_t sz);
+void *calloc(size_t nmem, size_t sz);
 
-void *my_realloc(void *ptr, size_t sz);
+void *realloc(void *ptr, size_t sz);
 //
 //void *reallocarray(void *ptr, size_t nmemb, size_t size);
 //
 
-void my_free(void *ptr);
+void free(void *ptr);
 
 //void my_free(void **p_to_free);
 

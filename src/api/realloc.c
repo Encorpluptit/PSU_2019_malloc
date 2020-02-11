@@ -6,11 +6,11 @@
 #include <stddef.h>
 #include "memory.h"
 
-void *my_realloc(void *ptr, size_t sz) {
+void *realloc(void *ptr, size_t sz) {
     metadata_t *mdata = NULL;
 
     if (!ptr)
-        return my_malloc(sz);
+        return malloc(sz);
     dbg_pf("%p", ptr);
     if (!(mdata = find_ptr(ptr)))
         exit(37);
