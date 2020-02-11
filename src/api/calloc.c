@@ -5,9 +5,9 @@
 #include <string.h>
 #include "memory.h"
 
-void *calloc(size_t nmem, size_t sz)
+void *my_calloc(size_t nmem, size_t sz)
 {
-    void *ptr = malloc(nmem * sz);
+    void *ptr = my_malloc(nmem * sz);
 
     memset(ptr, 0, nmem * sz);
     return ptr;

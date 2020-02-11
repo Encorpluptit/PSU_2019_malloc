@@ -7,7 +7,7 @@
 
 // Custom free macro, to reset at NULL value.
 /* #define FREE(x) free(x); x = NULL; */
-/* #define free(ptr) (my_free(&ptr)) */
+/* #define free(ptr) (free(&ptr)) */
 
 enum {
     STOCK,
@@ -75,7 +75,7 @@ typedef struct block_s {
 } block_t;
 
 #define ELEM_PTR(x) offsetof(ptr_t, x)
-#define MALLOC_INIT_SZ 10
+#define MALLOC_INIT_SZ 40
 #define PAGE_SZ (arena_get_page_size() * 2)
 #define METADATA_H_SZ sizeof(metadata_t)
 #define MIN_METADATA_SZ (METADATA_H_SZ * 2)
@@ -83,6 +83,7 @@ typedef struct block_s {
 
 #define BLOCK_OFFSET(x) (void *)((uintptr_t)x + BLOCK_H_SZ)
 #define METADATA_OFFSET(x) ((void *)((uintptr_t)x + METADATA_H_SZ))
+#define GET_METADATA_PTR(x) ((void *)((uintptr_t)x - METADATA_H_SZ))
 
 #ifndef INTERNAL
 #define INTERNAL
@@ -91,7 +92,7 @@ typedef struct block_s {
 
 // Custom free macro, to reset at NULL value.
 /* #define FREE(x) free(x); x = NULL; */
-/* #define free(ptr) (my_free(&ptr)) */
+/* #define free(ptr) (free(&ptr)) */
 
 
 // size_control.c
@@ -125,18 +126,18 @@ metadata_t *find_ptr(void *ptr);
 //bool add_in_list(metadata_t **p_list, void *p_ptr);
 
 // API
-void *malloc(size_t sz);
+void *my_malloc(size_t sz);
 
-void *calloc(size_t nmem, size_t sz);
+void *my_calloc(size_t nmem, size_t sz);
 
-void *realloc(void *ptr, size_t sz);
+void *my_realloc(void *ptr, size_t sz);
 //
-//void *reallocarray(void *ptr, size_t nmemb, size_t size);
+//void *my_reallocarray(void *ptr, size_t nmemb, size_t size);
 //
 
-void free(void *ptr);
+void my_free(void *ptr);
 
-//void my_free(void **p_to_free);
+//void free(void **p_to_free);
 
 //void hello(void);
 

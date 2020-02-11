@@ -47,7 +47,8 @@ INTERNAL bool add_in_block_list(block_t **p_list, block_t *ptr, size_t sz) {
         return true;
     }
     for (; list->next; list = list->next);
-    list = init_block(ptr, sz, list);
+    init_block(ptr, sz, list);
+//    list->next = init_block(ptr, sz, list);
     dbg_pf("[ ADD BLOCK LOOP ==> END ]: %p", list);
 //    dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
 //            list->metadata, list->metadata->sz);

@@ -30,18 +30,18 @@
 #ifndef _STATICS_CONST_RETURN_
 #define _STATICS_CONST_RETURN_
 #include <stddef.h>
-static const int ERROR = 84;
-static const int NOT_VALID = -42;
-static const int SUCCESS = 0;
+UNUSED static const int ERROR = 84;
+UNUSED static const int NOT_VALID = -42;
+UNUSED static const int SUCCESS = 0;
 UNUSED static const void *MALLOC_FAILED = NULL;
 
 //<===============================================>
 //<===============================================>
 // Essentials Static Constantes for strcmp/strncmp/strcmp_alpha/..only_alpha.
-static const int S1_LONGER = 1;
-static const int S2_LONGER = 2;
-static const int S1_UPPER = -1;
-static const int S2_UPPER = -2;
-static const int EQUAL = 0;
+UNUSED static const int S1_LONGER = 1;
+UNUSED static const int S2_LONGER = 2;
+UNUSED static const int S1_UPPER = -1;
+UNUSED static const int S2_UPPER = -2;
+UNUSED static const int EQUAL = 0;
 
 #endif /* _STATICS_CONST_RETURN_ */

@@ -4,7 +4,7 @@
 
 #include "memory.h"
 
-void free(void *ptr) {
+void my_free(void *ptr) {
     metadata_t *mdata = NULL;
 
     if (!ptr)

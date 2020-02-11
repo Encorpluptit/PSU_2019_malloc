@@ -15,7 +15,7 @@ INTERNAL bool split_metadata(metadata_t **p_metadata) {
 
     if ((*p_metadata)->sz <= MIN_METADATA_SZ)
         return false;
-    dbg_pf("SIZE SPLIT: Offset: %zd\t Old/next Ptr: %p/%p", offset, metadata, new_metadata);
+    dbg_pf("SIZE SPLIT: Offset: %zd\t Old/new Ptr: %p/%p", offset, metadata, new_metadata);
     size_t sz_tmp = metadata->sz;
     (*new_metadata) = (metadata_t) {
             .sz = metadata->sz - offset, .free = true,
