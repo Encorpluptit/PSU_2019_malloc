@@ -3,12 +3,13 @@
 //
 
 #include <string.h>
-#include "memory.h"
+#include "my_malloc.h"
 
 void *my_calloc(size_t nmem, size_t sz)
 {
-    void *ptr = my_malloc(nmem * sz);
-
-    memset(ptr, 0, nmem * sz);
-    return ptr;
+    return my_malloc(nmem * sz);
+//    void *ptr = my_malloc(nmem * sz);
+//
+//    memset(ptr, 0, nmem * sz);
+//    return ptr;
 }

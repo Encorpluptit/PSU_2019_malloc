@@ -3,7 +3,8 @@
 //
 
 #include <stdlib.h>
-#include "memory.h"
+#include "my_malloc.h"
+#include "internal.h"
 
 static void *init_arena(block_t *arena) {
     block_t *heap = NULL;
@@ -20,6 +21,7 @@ INTERNAL block_t *arena_control() {
     static block_t *arena = NULL;
 
     if (!arena) {
+        dbg("YES");
 //        dbg_pf("ARENA NULL: %p", arena);
         if (!(arena = init_arena(arena)))
             exit(84);

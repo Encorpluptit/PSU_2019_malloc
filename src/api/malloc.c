@@ -3,7 +3,8 @@
 //
 
 #include <stdlib.h>
-#include "memory.h"
+#include "my_malloc.h"
+#include "internal.h"
 
 static void *malloc_block(block_t *arena, size_t sz) {
     sz = align(sz + MIN_METADATA_SZ);

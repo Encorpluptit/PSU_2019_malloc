@@ -3,7 +3,8 @@
 //
 
 #include <string.h>
-#include "memory.h"
+#include "my_malloc.h"
+#include "internal.h"
 
 INTERNAL void *request_block(size_t sz) {
 //    size_t new_size = align(sz - 1);
@@ -19,16 +20,13 @@ INTERNAL void *request_block(size_t sz) {
 
 static block_t *init_block(block_t *ptr, size_t sz, block_t *list) {
     *ptr = (block_t) {
-            .sz = sz,
-            .next = NULL, .prev = NULL,
+            .sz = sz, .next = NULL, .prev = NULL,
             .metadata = BLOCK_OFFSET(ptr)};
     (*ptr->metadata) = (metadata_t) {
-            .sz = sz - MIN_METADATA_SZ,
-            .next = NULL, .prev = NULL,
-            .free = true};
+            .sz = sz - MIN_METADATA_SZ, .free = true,
+            .next = NULL, .prev = NULL};
     if (list) {
         ptr->prev = list;
-//        ptr->next = list->next;
         list->next = ptr;
     }
     return ptr;

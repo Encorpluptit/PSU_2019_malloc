@@ -40,7 +40,6 @@ SRC_FILES		=	api/malloc.c				\
 				api/calloc.c				\
 				api/realloc.c				\
 				api/free.c				\
-				internal/attributes.c			\
 				internal/arena_control.c		\
 				internal/block_alloc.c			\
 				internal/metadata_control.c		\
@@ -318,8 +317,8 @@ TITLE			=	"\e[1;4;31m"
 ####################
 # Rule for "make"
 .PHONY: all
-all: BUILD_LIB $(PROJECT)
-# all: BUILD_LIB
+# all: BUILD_LIB $(PROJECT)
+all: BUILD_LIB
 
 ####################
 # Rule for "make re".
@@ -356,7 +355,7 @@ $(PROJECT): 		$(MAIN)
 	@echo -e	"[$(PROJECT)]: LDFLAGS   = $(LDFLAGS)"						| cat
 	@echo -e	"[$(PROJECT)]: LDLIBS    = $(LDLIBS)"						| cat
 	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./
-	$(CC) -o $(BIN_NAME) $^ $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(LDLIBS) -D_T_
+	$(CC) -o $(BIN_NAME) $^ $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(LDLIBS)
 # @$(CC) -o $(BIN_NAME) $^ $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) $(LDLIBS)
 	@echo -e	$(TASK_OK)"[$(PROJECT) | Compilation] OK\n"$(END)				| cat
 #############################################################################################################

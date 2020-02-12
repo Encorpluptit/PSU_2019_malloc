@@ -2,7 +2,8 @@
 // Created by dbernard on 2/9/20.
 //
 
-#include "memory.h"
+#include "my_malloc.h"
+#include "internal.h"
 
 void my_free(void *ptr) {
     metadata_t *mdata = NULL;
@@ -12,7 +13,8 @@ void my_free(void *ptr) {
     mdata = find_ptr(ptr);
     if (!mdata)
         return;
+    dbg_pf("FREE: %zd", mdata->sz);
     mdata->free = true;
-    _merge_metadata(mdata);
-//    merge_metadata(mdata, mdata->next);
+    merge_metadata(mdata);
+    dbg_pf("FREE: %zd", mdata->sz);
 }

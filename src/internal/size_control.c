@@ -2,7 +2,7 @@
 // Created by dbernard on 2/8/20.
 //
 
-#include "memory.h"
+#include "my_malloc.h"
 
 size_t align(size_t sz) {
     for (size_t i = 0; i != 32; ++i)

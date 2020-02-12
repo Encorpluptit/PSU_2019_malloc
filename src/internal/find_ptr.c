@@ -2,7 +2,8 @@
 // Created by dbernard on 2/10/20.
 //
 
-#include "memory.h"
+#include "my_malloc.h"
+#include "internal.h"
 
 INTERNAL metadata_t *find_ptr(void *ptr) {
     metadata_t *mdata = NULL;
