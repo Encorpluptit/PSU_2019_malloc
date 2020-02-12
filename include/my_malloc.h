@@ -11,15 +11,15 @@
 //<===============================================>
 //<===============================================>
 // API functions prototypes. (@TODO: TO CHANGE)
-void *my_malloc(size_t sz);
+void *malloc(size_t sz);
 
-void *my_calloc(size_t nmem, size_t sz);
+void *calloc(size_t nmem, size_t sz);
 
-void *my_realloc(void *ptr, size_t sz);
+void *realloc(void *ptr, size_t sz);
 
-void *my_reallocarray(void *ptr, size_t nmemb, size_t sz);
+void *reallocarray(void *ptr, size_t nmemb, size_t sz);
 
-void my_free(void *ptr);
+void free(void *ptr);
 
 
 //<===============================================>
@@ -44,8 +44,8 @@ typedef struct block_s {
 //<===============================================>
 // Essentials Constants Statics. (@TODO: TO CHANGE)
 #define ELEM_PTR(x) offsetof(ptr_t, x)
-#define MALLOC_INIT_SZ 10
-#define PAGE_SZ (arena_get_page_size() * 2)
+#define MALLOC_INIT_SZ 20
+#define PAGE_SZ (arena_get_page_size() * 40)
 #define METADATA_H_SZ sizeof(metadata_t)
 #define MIN_METADATA_SZ (METADATA_H_SZ * 2)
 #define BLOCK_H_SZ sizeof(block_t)
