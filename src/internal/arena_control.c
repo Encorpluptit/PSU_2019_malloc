@@ -1,12 +1,16 @@
-//
-// Created by dbernard on 2/8/20.
-//
+/*
+** EPITECH PROJECT, 2020
+** Malloc
+** File description:
+** [INTERNAL] Source file for arena control.
+*/
 
 #include <stdlib.h>
 #include "my_malloc.h"
 #include "internal.h"
 
-static void *init_arena(block_t *arena) {
+static void *init_arena(block_t *arena)
+{
     block_t *heap = NULL;
 
     for (uint32_t i = 1; i <= MALLOC_INIT_SZ; ++i) {
@@ -17,7 +21,8 @@ static void *init_arena(block_t *arena) {
     return arena;
 }
 
-INTERNAL block_t *arena_control() {
+INTERNAL block_t *arena_control()
+{
     static block_t *arena = NULL;
     char test[3] = "Yo\n";
 
@@ -32,7 +37,8 @@ INTERNAL block_t *arena_control() {
     return arena;
 }
 
-INTERNAL int arena_get_page_size(void) {
+INTERNAL int arena_get_page_size(void)
+{
     static int page_sz = 0;
 
     if (!page_sz)

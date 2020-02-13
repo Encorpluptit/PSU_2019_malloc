@@ -1,6 +1,9 @@
-//
-// Created by dbernard on 2/11/20.
-//
+/*
+** EPITECH PROJECT, 2020
+** Malloc
+** File description:
+** Header file fo debug maccro
+*/
 
 #ifndef PSU_2019_MALLOC_DEBUG_H
 #define PSU_2019_MALLOC_DEBUG_H
@@ -10,8 +13,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#define __FILENAME__ (strrchr(__FILE__, '/') ? strrchr(__FILE__, '/') + 1 : __FILE__)
+#define __FILENAME__ (strrchr(__FILE__, '/') ?  \
+                        strrchr(__FILE__, '/') + 1 : __FILE__)
+
 #define dbg(x) write(1, x"\n", sizeof(x))
+
 #define dbg_local                                   \
     (printf("[ %s ] - [ %s():%d ] ==> ",            \
             __FILENAME__,                           \
@@ -21,7 +27,6 @@
 #define dbg_pf(x, ...)                              \
     dbg_local;                                      \
     printf(x"\n", __VA_ARGS__);
-
 
 #define dbg_begin(of, x, ...)                           \
     dbg_local;                                          \

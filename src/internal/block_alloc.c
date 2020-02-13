@@ -1,13 +1,16 @@
-//
-// Created by dbernard on 2/8/20.
-//
+/*
+** EPITECH PROJECT, 2020
+** Malloc
+** File description:
+** [INTERNAL] Source file for block alloc.
+*/
 
 #include <string.h>
 #include "my_malloc.h"
 #include "internal.h"
 
-INTERNAL void *request_block(size_t sz) {
-//    size_t new_size = align(sz - 1);
+INTERNAL void *request_block(size_t sz)
+{
     size_t new_size = sz;
     void *heap = sbrk(new_size);
 
@@ -18,7 +21,8 @@ INTERNAL void *request_block(size_t sz) {
     return heap;
 }
 
-static block_t *init_block(block_t *ptr, size_t sz, block_t *list) {
+static block_t *init_block(block_t *ptr, size_t sz, block_t *list)
+{
     *ptr = (block_t) {
             .sz = sz, .next = NULL, .prev = NULL,
             .metadata = BLOCK_OFFSET(ptr)};
@@ -32,23 +36,19 @@ static block_t *init_block(block_t *ptr, size_t sz, block_t *list) {
     return ptr;
 }
 
-
-INTERNAL bool add_in_block_list(block_t **p_list, block_t *ptr, size_t sz) {
+INTERNAL bool add_in_block_list(block_t **p_list, block_t *ptr, size_t sz)
+{
     block_t *list = *p_list;
 
     if (!list) {
         *p_list = init_block(ptr, sz, NULL);
-//        dbg_pf("[ADD BLOCK - ARENA INIT] %p,\tSize: %zd",
-//               *p_list, (*p_list)->sz);
-//        dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
-//               (*p_list)->metadata, (*p_list)->metadata->sz);
+        dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
+               (*p_list)->metadata, (*p_list)->metadata->sz);
         return true;
     }
     for (; list->next; list = list->next);
     init_block(ptr, sz, list);
-//    list->next = init_block(ptr, sz, list);
-    dbg_pf("[ ADD BLOCK LOOP ==> END ]: %p", list);
-//    dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
-//            list->metadata, list->metadata->sz);
+    dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
+            list->metadata, list->metadata->sz);
     return true;
 }

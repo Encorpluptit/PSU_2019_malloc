@@ -1,11 +1,15 @@
-//
-// Created by dbernard on 2/9/20.
-//
+/*
+** EPITECH PROJECT, 2020
+** Malloc
+** File description:
+** Source file for free.
+*/
 
 #include "my_malloc.h"
 #include "internal.h"
 
-void free(void *ptr) {
+void my_free(void *ptr)
+{
     metadata_t *mdata = NULL;
 
     if (!ptr)
