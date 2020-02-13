@@ -43,7 +43,7 @@ static void *resize_metadata(metadata_t *metadata, size_t sz)
     return METADATA_OFFSET(metadata);
 }
 
-void *my_malloc(size_t sz)
+void *malloc(size_t sz)
 {
     sz = align(sz + METADATA_H_SZ);
     block_t *head = arena_control();
@@ -58,5 +58,5 @@ void *my_malloc(size_t sz)
     if (res)
         return resize_metadata(res, sz);
     malloc_block(head, PAGE_SZ);
-    return my_malloc(sz);
+    return malloc(sz);
 }

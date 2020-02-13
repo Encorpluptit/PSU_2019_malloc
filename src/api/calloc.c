@@ -8,7 +8,7 @@
 #include <string.h>
 #include "my_malloc.h"
 
-void *my_calloc(size_t nmem, size_t sz)
+void *calloc(size_t nmem, size_t sz)
 {
-    return my_malloc(nmem * sz);
+    return malloc(nmem * sz);
 }

@@ -8,7 +8,7 @@
 #include "my_malloc.h"
 #include "internal.h"
 
-void my_free(void *ptr)
+void free(void *ptr)
 {
     metadata_t *mdata = NULL;
 
