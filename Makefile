@@ -37,8 +37,8 @@ LIB_FLAG			=	lib
 MAIN_FILE		= 	memory.c
 
 SRC_FILES		=	api/malloc.c				\
-				api/my_calloc.c				\
-				api/my_realloc.c				\
+				api/calloc.c				\
+				api/realloc.c				\
 				api/free.c				\
 				internal/arena_control.c		\
 				internal/block_alloc.c			\
