@@ -9,8 +9,8 @@
 #define PSU_2019_MALLOC_INTERNAL_H
 
 #ifndef INTERNAL
-#define INTERNAL
-//#define INTERNAL __attribute__((visibility ("hidden")))
+//#define INTERNAL
+#define INTERNAL __attribute__((visibility ("hidden")))
 //(@TODO: fix compile errror)
 #endif /* HIDDEN */
 
