@@ -24,10 +24,8 @@ static void *init_arena(block_t *arena)
 INTERNAL block_t *arena_control()
 {
     static block_t *arena = NULL;
-    char test[3] = "Yo\n";
 
     if (!arena) {
-        write(1, &test, 3);
 //        dbg_pf("ARENA NULL: %p", arena);
         if (!(arena = init_arena(arena)))
             exit(84);
