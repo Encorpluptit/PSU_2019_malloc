@@ -36,8 +36,8 @@ static metadata_t *find_best_metadata(block_t *block, size_t sz)
 static void *resize_metadata(metadata_t *metadata, size_t sz)
 {
 //    for (; metadata->sz >= align(sz);)
-//    for (; metadata->sz > sz;)
-    for (; metadata->sz > sz + METADATA_H_SZ;)
+//    for (; metadata->sz > sz + METADATA_H_SZ;)
+    for (; metadata->sz > sz;)
         split_metadata(&metadata);
     metadata->free = false;
     return METADATA_OFFSET(metadata);
@@ -45,6 +45,7 @@ static void *resize_metadata(metadata_t *metadata, size_t sz)
 
 void *malloc(size_t sz)
 {
+//    sz = align(sz + METADATA_H_SZ);
     block_t *head = arena_control();
     metadata_t *res = NULL;
 
@@ -55,7 +56,7 @@ void *malloc(size_t sz)
         if ((res = find_best_metadata(tmp, sz)))
             break;
     if (res)
-        return resize_metadata(res, sz);
+        return resize_metadata(res, align(sz + METADATA_H_SZ));
     malloc_block(head, PAGE_SZ);
     return malloc(sz);
 }

@@ -5,6 +5,7 @@
 ** Source file for reallocarray.
 */
 
+#include <string.h>
 #include "my_malloc.h"
 
 void *reallocarray(void *ptr, size_t nmemb, size_t sz)
