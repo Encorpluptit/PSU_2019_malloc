@@ -34,7 +34,7 @@ LIB_FLAG			=	lib
 # ==     Project Files     == #
 #=============================#
 #############################################################################################################
-MAIN_FILE		= 	memory.c
+MAIN_FILE		= 	my_malloc.c
 
 SRC_FILES		=	api/malloc.c				\
 				api/calloc.c				\
@@ -46,7 +46,7 @@ SRC_FILES		=	api/malloc.c				\
 				internal/size_control.c		\
 				internal/find_ptr.c			\
 
-TSRC_FILES		=	#						\
+TSRC_FILES		=	internal/size_control.c		\
 
 LIB_FILES		=	#						\
 
@@ -397,7 +397,7 @@ BUILD_LIB: 	$(OBJ)
 #############################################################################################################
 .PHONY: $(UTESTS_RUN)
 $(UTESTS_RUN):		CPPFLAGS	+=	$(TESTS_INCLUDES)
-$(UTESTS_RUN):		fclean BUILD_LIB $(OBJ) $(TESTS_OBJ)
+$(UTESTS_RUN):		fclean $(OBJ) $(TESTS_OBJ)
 	@echo -e	"\n\n"$(FRAME_D)								| cat
 	@echo -e	$(GREEN_BG)"[$(PROJECT)]: Testing project"$(END)				| cat
 	@echo -e	$(FRAME_D)									| cat
@@ -410,8 +410,7 @@ $(UTESTS_RUN):		fclean BUILD_LIB $(OBJ) $(TESTS_OBJ)
 	@echo -e	"[$(PROJECT)]: LDFLAGS   = $(LDFLAGS)"						| cat
 	@echo -e	"[$(PROJECT)]: LDLIBS    = $(LDLIBS)"						| cat
 	@echo -e	"[$(PROJECT)]: TFLAGS    = $(TFLAGS)"						| cat
-	@$(CC) -o $(TESTS_BIN) $(TSRC) $(TESTS_SRC) $(CFLAGS) $(LDFLAGS) $(TFLAGS) $(CPPFLAGS) $(LDLIBS)
-
+	$(CC) -o $(TESTS_BIN) $(TSRC) $(TESTS_SRC) $(CFLAGS) $(TFLAGS) $(CPPFLAGS)
 	@echo -e	$(UL)"\n\n[$(PROJECT)]: Starting UNIT_TESTS binary."$(END)			| cat
 	@echo -e	"[$(PROJECT)]: TRUNFLAGS  = $(TRUNFLAGS)\n"					| cat
 	@-./$(TESTS_BIN) $(TRUNFLAGS)
