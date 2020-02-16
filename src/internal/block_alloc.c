@@ -14,7 +14,6 @@ INTERNAL void *request_block(size_t sz)
     size_t new_size = sz;
     void *heap = sbrk(new_size);
 
-    dbg_pf("REQUEST BLOCK: %zd, \t%p", new_size, heap);
     if (heap == (void *) -1)
         return NULL;
     memset(heap, 0, new_size);
@@ -42,13 +41,9 @@ INTERNAL bool add_in_block_list(block_t **p_list, block_t *ptr, size_t sz)
 
     if (!list) {
         *p_list = init_block(ptr, sz, NULL);
-        dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
-               (*p_list)->mdata, (*p_list)->mdata->sz);
         return true;
     }
     for (; list->next; list = list->next);
     init_block(ptr, sz, list);
-    dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
-           list->mdata, list->mdata->sz);
     return true;
 }

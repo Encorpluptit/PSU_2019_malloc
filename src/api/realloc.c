@@ -9,7 +9,8 @@
 #include "my_malloc.h"
 #include "internal.h"
 
-mdata_t *check_ptr(void *ptr, size_t sz, bool *check) {
+mdata_t *check_ptr(void *ptr, size_t sz, bool *check)
+{
     if (!sz) {
         free(ptr);
         *check = true;
@@ -35,7 +36,6 @@ void *realloc(void *ptr, size_t sz)
             return NULL;
         return METADATA_OFFSET(mdata);
     }
-    dbg_pf("realloc sz: %zd\tmeta: %zd", sz, mdata->sz);
     new_ptr = malloc(sz);
     memcpy(new_ptr, ptr, sz > mdata->sz ? mdata->sz : sz);
     free(ptr);

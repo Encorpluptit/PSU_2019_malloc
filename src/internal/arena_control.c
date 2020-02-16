@@ -21,14 +21,13 @@ static void *init_arena(block_t *arena)
     return arena;
 }
 
-INTERNAL block_t *arena_control()
+INTERNAL block_t *arena_control(void)
 {
     static block_t *arena = NULL;
 
     if (!arena)
         if (!(arena = init_arena(arena)))
             exit(84);
-    dbg_pf("GIVE ARENA: %p", arena);
     return arena;
 }
 

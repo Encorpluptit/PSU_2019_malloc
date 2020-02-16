@@ -39,6 +39,7 @@ MAIN_FILE		= 	my_malloc.c
 SRC_FILES		=	api/malloc.c				\
 				api/calloc.c				\
 				api/realloc.c				\
+				api/reallocarray.c			\
 				api/free.c				\
 				internal/arena_control.c		\
 				internal/block_alloc.c			\

@@ -17,8 +17,6 @@ void free(void *ptr)
     mdata = find_ptr(ptr);
     if (!mdata)
         return;
-    dbg_pf("FREE: %zd", mdata->sz);
     mdata->free = true;
     merge_mdata(mdata);
-    dbg_pf("FREE: %zd", mdata->sz);
 }
