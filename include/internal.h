@@ -16,29 +16,27 @@
 
 //<===============================================>
 //<===============================================>
-// Struct for holding blocks and metadatas. (@TODO: CHANGE metatata -> mdata)
 
-typedef struct metadata_s {
-    struct metadata_s *next;
-    struct metadata_s *prev;
+typedef struct mdata_s {
+    struct mdata_s *next;
+    struct mdata_s *prev;
     size_t sz;
     bool free;
-} metadata_t;
+} mdata_t;
 
 typedef struct block_s {
     struct block_s *prev;
     struct block_s *next;
     size_t sz;
-    struct metadata_s *metadata;
+    struct mdata_s *mdata;
 } block_t;
 
 //<===============================================>
 //<===============================================>
-// Essentials Constants Statics. (@TODO: TO CHANGE)
 #define ELEM_PTR(x) offsetof(ptr_t, x)
 #define MALLOC_INIT_SZ 10
 #define PAGE_SZ (arena_get_page_size() * 2)
-#define METADATA_H_SZ sizeof(metadata_t)
+#define METADATA_H_SZ sizeof(mdata_t)
 #define MIN_METADATA_SZ (METADATA_H_SZ * 2)
 #define BLOCK_H_SZ sizeof(block_t)
 
@@ -65,11 +63,11 @@ INTERNAL void *request_block(size_t sz);
 
 
 // metadata_control.c
-INTERNAL bool split_metadata(metadata_t **p_metadata);
+INTERNAL bool split_mdata(mdata_t **p_mdata);
 
-INTERNAL bool merge_metadata(metadata_t *metadata);
+INTERNAL bool merge_mdata(mdata_t *mdata);
 
 // find_ptr.c
-INTERNAL metadata_t *find_ptr(void *ptr);
+INTERNAL mdata_t *find_ptr(void *ptr);
 
 #endif //PSU_2019_MALLOC_INTERNAL_H

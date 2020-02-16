@@ -9,7 +9,7 @@
 #include "my_malloc.h"
 #include "internal.h"
 
-metadata_t *check_ptr(void *ptr, size_t sz, bool *check) {
+mdata_t *check_ptr(void *ptr, size_t sz, bool *check) {
     if (!sz) {
         my_free(ptr);
         *check = true;
@@ -27,7 +27,7 @@ metadata_t *check_ptr(void *ptr, size_t sz, bool *check) {
 void *my_realloc(void *ptr, size_t sz)
 {
     bool check = false;
-    metadata_t *mdata = check_ptr(ptr, sz, &check);
+    mdata_t *mdata = check_ptr(ptr, sz, &check);
     void *new_ptr = NULL;
 
     if (check) {

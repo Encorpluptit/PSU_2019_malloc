@@ -25,12 +25,9 @@ INTERNAL block_t *arena_control()
 {
     static block_t *arena = NULL;
 
-    if (!arena) {
-//        dbg_pf("ARENA NULL: %p", arena);
+    if (!arena)
         if (!(arena = init_arena(arena)))
             exit(84);
-//        dbg_pf("END INIT ARENA: %p,\t%p", arena, BLOCK_OFFSET(arena));
-    }
     dbg_pf("GIVE ARENA: %p", arena);
     return arena;
 }

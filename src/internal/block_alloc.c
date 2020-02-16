@@ -25,8 +25,8 @@ static block_t *init_block(block_t *ptr, size_t sz, block_t *list)
 {
     *ptr = (block_t) {
             .sz = sz, .next = NULL, .prev = NULL,
-            .metadata = BLOCK_OFFSET(ptr)};
-    (*ptr->metadata) = (metadata_t) {
+            .mdata = BLOCK_OFFSET(ptr)};
+    (*ptr->mdata) = (mdata_t) {
             .sz = sz - MIN_METADATA_SZ, .free = true,
             .next = NULL, .prev = NULL};
     if (list) {
@@ -43,12 +43,12 @@ INTERNAL bool add_in_block_list(block_t **p_list, block_t *ptr, size_t sz)
     if (!list) {
         *p_list = init_block(ptr, sz, NULL);
         dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
-               (*p_list)->metadata, (*p_list)->metadata->sz);
+               (*p_list)->mdata, (*p_list)->mdata->sz);
         return true;
     }
     for (; list->next; list = list->next);
     init_block(ptr, sz, list);
     dbg_pf("[ADD BLOCK - ARENA INIT] METADATA - Ptr: %p,\tSize: %zd",
-            list->metadata, list->metadata->sz);
+           list->mdata, list->mdata->sz);
     return true;
 }

@@ -10,5 +10,5 @@
 
 void *my_calloc(size_t nmem, size_t sz)
 {
-    return malloc(nmem * sz);
+    return my_malloc(nmem * sz);
 }

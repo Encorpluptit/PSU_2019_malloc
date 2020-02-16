@@ -10,7 +10,7 @@
 
 void my_free(void *ptr)
 {
-    metadata_t *mdata = NULL;
+    mdata_t *mdata = NULL;
 
     if (!ptr)
         return;
@@ -19,6 +19,6 @@ void my_free(void *ptr)
         return;
     dbg_pf("FREE: %zd", mdata->sz);
     mdata->free = true;
-    merge_metadata(mdata);
+    merge_mdata(mdata);
     dbg_pf("FREE: %zd", mdata->sz);
 }
