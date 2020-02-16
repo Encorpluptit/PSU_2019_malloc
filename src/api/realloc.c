@@ -11,20 +11,20 @@
 
 mdata_t *check_ptr(void *ptr, size_t sz, bool *check) {
     if (!sz) {
-        my_free(ptr);
+        free(ptr);
         *check = true;
         return NULL;
     }
     if (!ptr) {
         *check = true;
-        if (!(ptr = my_malloc(sz)))
+        if (!(ptr = malloc(sz)))
             return NULL;
         return GET_METADATA_PTR(ptr);
     }
     return GET_METADATA_PTR(ptr);
 }
 
-void *my_realloc(void *ptr, size_t sz)
+void *realloc(void *ptr, size_t sz)
 {
     bool check = false;
     mdata_t *mdata = check_ptr(ptr, sz, &check);
@@ -36,9 +36,9 @@ void *my_realloc(void *ptr, size_t sz)
         return METADATA_OFFSET(mdata);
     }
     dbg_pf("realloc sz: %zd\tmeta: %zd", sz, mdata->sz);
-    new_ptr = my_malloc(sz);
+    new_ptr = malloc(sz);
     memcpy(new_ptr, ptr, sz > mdata->sz ? mdata->sz : sz);
-    my_free(ptr);
+    free(ptr);
     return new_ptr;
 
 }
