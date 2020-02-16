@@ -50,12 +50,12 @@ void *my_malloc(size_t sz)
 
     dbg_pf("[ MALLOC SIZE ]: %zd\tnew: %zd", sz, new_size);
     if (sz + MIN_METADATA_SZ > (size_t)PAGE_SZ)
-        return malloc_block(head, new_size);
+        return malloc_block(head, align(sz + MIN_METADATA_SZ));
     for (block_t *tmp = head; tmp; tmp = tmp->next)
         if ((res = find_best_mdata(tmp, sz)))
             break;
     if (res)
-        return resize_mdata(res, new_size - METADATA_H_SZ);
+        return resize_mdata(res, new_size);
     malloc_block(head, PAGE_SZ);
     return my_malloc(sz);
 }
