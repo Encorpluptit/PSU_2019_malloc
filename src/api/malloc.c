@@ -45,19 +45,18 @@ static void *resize_metadata(metadata_t *metadata, size_t sz)
 
 void *my_malloc(size_t sz)
 {
-    size_t new_size  = align(sz);
+    size_t new_size  = align(sz + METADATA_H_SZ);
     block_t *head = arena_control();
     metadata_t *res = NULL;
 
-    dbg_pf("[ MALLOC SIZE ]: %zd", new_size);
+    dbg_pf("[ MALLOC SIZE ]: %zd\tnew: %zd", sz, new_size);
     if (sz + MIN_METADATA_SZ > (size_t)PAGE_SZ)
         return malloc_block(head, new_size);
     for (block_t *tmp = head; tmp; tmp = tmp->next)
-        if ((res = find_best_metadata(tmp, sz - METADATA_H_SZ)))
+        if ((res = find_best_metadata(tmp, sz)))
             break;
     if (res)
-        return resize_metadata(res, new_size);
+        return resize_metadata(res, new_size - METADATA_H_SZ);
     malloc_block(head, PAGE_SZ);
-    dbg("LOL malloc");
     return my_malloc(sz);
 }

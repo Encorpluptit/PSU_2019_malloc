@@ -9,17 +9,36 @@
 #include "my_malloc.h"
 #include "internal.h"
 
+metadata_t *check_ptr(void *ptr, size_t sz, bool *check) {
+    if (!sz) {
+        my_free(ptr);
+        *check = true;
+        return NULL;
+    }
+    if (!ptr) {
+        *check = true;
+        if (!(ptr = my_malloc(sz)))
+            return NULL;
+        return GET_METADATA_PTR(ptr);
+    }
+    return GET_METADATA_PTR(ptr);
+}
+
 void *my_realloc(void *ptr, size_t sz)
 {
+    bool check = false;
+    metadata_t *mdata = check_ptr(ptr, sz, &check);
     void *new_ptr = NULL;
-    metadata_t *mdata = NULL;
 
-    if (!ptr)
-        return my_malloc(sz);
-    if (!(new_ptr = my_malloc(sz)))
-        return NULL;
-    mdata = GET_METADATA_PTR(ptr);
+    if (check) {
+        if (!mdata)
+            return NULL;
+        return METADATA_OFFSET(mdata);
+    }
+    dbg_pf("realloc sz: %zd\tmeta: %zd", sz, mdata->sz);
+    new_ptr = my_malloc(sz);
     memcpy(new_ptr, ptr, sz > mdata->sz ? mdata->sz : sz);
     my_free(ptr);
     return new_ptr;
+
 }
