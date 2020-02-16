@@ -19,14 +19,14 @@
 //<===============================================>
 //<===============================================>
 // API functions prototypes. (@TODO: TO CHANGE)
-void *malloc(size_t sz);
+void *my_malloc(size_t sz);
 
-void *calloc(size_t nmem, size_t sz);
+void *my_calloc(size_t nmem, size_t sz);
 
-void *realloc(void *ptr, size_t sz);
+void *my_realloc(void *ptr, size_t sz);
 
-void *reallocarray(void *ptr, size_t nmemb, size_t sz);
+void *my_reallocarray(void *ptr, size_t nmemb, size_t sz);
 
-void free(void *ptr);
+void my_free(void *ptr);
 
 #endif //PSU_2019_MALLOC_MY_MALLOC_H

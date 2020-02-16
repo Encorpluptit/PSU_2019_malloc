@@ -26,7 +26,7 @@ static metadata_t *find_best_metadata(block_t *block, size_t sz)
     metadata_t *head = block->metadata;
 
     for (metadata_t *tmp = head; tmp; tmp = tmp->next) {
-        dbg_pf("[ BEST DATA SIZE ]: %zd", tmp->sz);
+        dbg_pf("[ BEST DATA SIZE ]: %zd\t Requested: %zd", tmp->sz, sz);
         if (tmp->free && tmp->sz >= sz)
             return tmp;
     }
@@ -43,20 +43,21 @@ static void *resize_metadata(metadata_t *metadata, size_t sz)
     return METADATA_OFFSET(metadata);
 }
 
-void *malloc(size_t sz)
+void *my_malloc(size_t sz)
 {
-//    sz = align(sz + METADATA_H_SZ);
+    size_t new_size  = align(sz);
     block_t *head = arena_control();
     metadata_t *res = NULL;
 
-    dbg_pf("[ MALLOC SIZE ]: %zd", sz);
+    dbg_pf("[ MALLOC SIZE ]: %zd", new_size);
     if (sz + MIN_METADATA_SZ > (size_t)PAGE_SZ)
-        return malloc_block(head, align(sz + MIN_METADATA_SZ));
+        return malloc_block(head, new_size);
     for (block_t *tmp = head; tmp; tmp = tmp->next)
-        if ((res = find_best_metadata(tmp, sz)))
+        if ((res = find_best_metadata(tmp, sz - METADATA_H_SZ)))
             break;
     if (res)
-        return resize_metadata(res, align(sz + METADATA_H_SZ));
+        return resize_metadata(res, new_size);
     malloc_block(head, PAGE_SZ);
-    return malloc(sz);
+    dbg("LOL malloc");
+    return my_malloc(sz);
 }

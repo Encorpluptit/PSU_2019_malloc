@@ -8,7 +8,7 @@
 #include <string.h>
 #include "my_malloc.h"
 
-void *reallocarray(void *ptr, size_t nmemb, size_t sz)
+void *my_reallocarray(void *ptr, size_t nmemb, size_t sz)
 {
     void *new_ptr = NULL;
 
