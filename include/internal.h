@@ -37,8 +37,8 @@ typedef struct block_s {
 #define MALLOC_INIT_SZ 20
 #define PAGE_SZ (arena_get_page_size() * 4)
 #define METADATA_H_SZ sizeof(mdata_t)
-#define MIN_METADATA_SZ (METADATA_H_SZ * 2)
 #define BLOCK_H_SZ sizeof(block_t)
+#define MIN_METADATA_SZ (METADATA_H_SZ + BLOCK_H_SZ)
 
 #define BLOCK_OFFSET(x) (void *)((uintptr_t)x + BLOCK_H_SZ)
 #define METADATA_OFFSET(x) ((void *)((uintptr_t)x + METADATA_H_SZ))

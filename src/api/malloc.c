@@ -34,8 +34,6 @@ static mdata_t *find_best_mdata(block_t *block, size_t sz)
 
 static void *resize_mdata(mdata_t *mdata, size_t sz)
 {
-//    for (; mdata->sz >= align(sz);)
-//    for (; mdata->sz > sz + METADATA_H_SZ;)
     for (; mdata->sz > sz;)
         split_mdata(&mdata);
     mdata->free = false;
