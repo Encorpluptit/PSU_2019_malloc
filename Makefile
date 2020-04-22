@@ -333,7 +333,7 @@ re: fclean all
 ####################
 # Rule for transforming .c into .o
 %.o: %.c
-	@$(CC) $(CPPFLAGS) -c -o $@ $<
+	@$(CC) $(CPPFLAGS) $(LSHARED) -c -o $@ $<
 	@echo -e	$(MAG)"[$(PROJECT) | $(CC)] OK → $@"$(END)					| cat
 #############################################################################################################
 
