@@ -1,0 +1,8 @@
+.gitignore
+ftests_run
+*.gcno
+*.gcda
+*.o
+*.a
+*~
+#*#

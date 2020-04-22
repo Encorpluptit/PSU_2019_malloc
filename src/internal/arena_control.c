@@ -27,7 +27,7 @@ INTERNAL block_t *arena_control(void)
 
     if (!arena)
         if (!(arena = init_arena(arena)))
-            exit(84);
+            return NULL;
     return arena;
 }
 

@@ -1,0 +1,17 @@
+add_library(
+        my_malloc.so
+        SHARED
+        include/my_malloc.h
+        include/internal.h
+        src/api/malloc.c
+        src/api/free.c
+        src/api/calloc.c
+        src/api/realloc.c
+        src/api/reallocarray.c
+        src/internal/arena_control.c
+        src/internal/size_control.c
+        src/internal/block_alloc.c
+        src/internal/metadata_control.c
+        src/internal/find_ptr.c
+        include/debug.h
+)
