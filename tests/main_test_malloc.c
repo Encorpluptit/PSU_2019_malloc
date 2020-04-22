@@ -21,11 +21,8 @@ void test_memory(char **tab, bool rw) {
 
     for (block_t *tmp = arena; tmp; tmp = tmp->next, ++index) {
         dbg_pf("[ FILL LINE BLOCK DUMP ] Ptr: %p,\tSize: %zd\t INDEX: %zd", tmp, tmp->sz, index);
-//        dbg_p("[ FILL LINE BLOCK DUMP ] Ptr: %p,\tSize: %zd\t INDEX: %zd", tmp, tmp->sz, index);
         for (data = tmp->mdata; data; data = data->next) {
-//            dbg_p("[ FILL LINE DATA DUMP ] Ptr: %p,\tSize: %zd\t User Ptr: %p,\tFree ? %s",
-//                   data, data->sz, METADATA_OFFSET(data), data->free ? "Y" : "N");
-            write(1, data->free ? "Y\n" : "N\n", 2)
+            write(1, data->free ? "Y\n" : "N\n", 2);
             dbg_pf("[ FILL LINE DATA DUMP ] Ptr: %p,\tSize: %zd\t User Ptr: %p,\tFree ? %s",
                    data, data->sz, METADATA_OFFSET(data), data->free ? "Y" : "N");
             dbg_pf("[ FILL LINE DATA DIFF PTR ]: %zd", (uintptr_t) data - (uintptr_t) tmp - BLOCK_H_SZ);

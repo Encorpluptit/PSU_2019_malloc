@@ -17,7 +17,7 @@ INTERNAL bool split_mdata(mdata_t **p_mdata)
 
     if ((*p_mdata)->sz <= MIN_METADATA_SZ)
         return false;
-    size_t sz_tmp = mdata->sz;
+//    size_t sz_tmp = mdata->sz;
     (*new_mdata) = (mdata_t) {
             .sz = mdata->sz - offset, .free = true,
             .prev = mdata, .next = mdata->next};

@@ -5,7 +5,6 @@
 ** [INTERNAL] Source file for arena control.
 */
 
-#include <stdlib.h>
 #include "my_malloc.h"
 #include "internal.h"
 

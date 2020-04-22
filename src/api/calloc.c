@@ -5,7 +5,6 @@
 ** Source file for calloc.
 */
 
-#include <string.h>
 #include "my_malloc.h"
 
 void *calloc(size_t nmem, size_t sz)

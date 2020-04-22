@@ -9,9 +9,14 @@
 #define PSU_2019_MALLOC_INTERNAL_H
 
 #ifndef INTERNAL
-#define INTERNAL
-//#define INTERNAL __attribute__((visibility ("hidden")))
-//(@TODO: fix compile errror)
+
+#ifndef _DEBUG_
+    #define INTERNAL __attribute__((visibility ("hidden")))
+    //(@TODO: fix compile error, not a good use yet)
+#else
+    #define INTERNAL
+#endif /* _DEBUG_ */
+
 #endif /* HIDDEN */
 
 //<===============================================>
@@ -45,28 +50,33 @@ typedef struct block_s {
 #define GET_METADATA_PTR(x) ((void *)((uintptr_t)x - METADATA_H_SZ))
 
 
+//<===============================================>
 // size_control.c
 INTERNAL size_t align(size_t sz);
 
 
+//<===============================================>
 // arena_control.c
 INTERNAL block_t *arena_control(void);
 
 INTERNAL int arena_get_page_size(void);
 
 
+//<===============================================>
 // block_alloc.c
 INTERNAL bool add_in_block_list(block_t **list, block_t *ptr, size_t sz);
 
 INTERNAL void *request_block(size_t sz);
 
 
-
+//<===============================================>
 // metadata_control.c
 INTERNAL bool split_mdata(mdata_t **p_mdata);
 
 INTERNAL bool merge_mdata(mdata_t *mdata);
 
+
+//<===============================================>
 // find_ptr.c
 INTERNAL mdata_t *find_ptr(void *ptr);
 
